@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مجتمع LodeaLode | شاركنا رأيك</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text: #1E1B4B;
+            --text-muted: #6B7280;
+            --primary: #6D28D9;
+            --primary-light: #8B5CF6;
+            --secondary: #EC4899;
+            --border: #E5E7EB;
+            --input-bg: #F3F4F6;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --nav-h: 70px;
+        }
+        body.dark-mode {
+            --bg: #0F0A1E;
+            --card-bg: #1A1133;
+            --text: #F1F5F9;
+            --text-muted: #94A3B8;
+            --border: rgba(255,255,255,0.08);
+            --input-bg: #1F163D;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        html, body { overflow-x: hidden !important; width: 100%; max-width: 100vw; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            padding-bottom: calc(var(--nav-h) + 30px);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ── Header ── */
+        .comm-header {
+            position: relative;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 40px 20px 60px;
+            color: white;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(109, 40, 217, 0.2);
+        }
+        .comm-header::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        .comm-header-content { position: relative; z-index: 2; }
+        .comm-title { font-size: 2rem; font-weight: 900; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .comm-subtitle { font-size: 0.9rem; font-weight: 600; opacity: 0.9; }
+        .back-btn {
+            position: absolute; top: 20px; right: 20px;
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem; cursor: pointer; z-index: 10; text-decoration: none;
+        }
+
+        /* ── Container ── */
+        .comm-container {
+            max-width: 800px;
+            margin: -40px auto 0;
+            padding: 0 16px;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* ── Tab Navigation ── */
+        .comm-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 6px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border: 1px solid var(--border);
+            gap: 4px;
+        }
+        .comm-tab {
+            flex: 1;
+            padding: 10px 6px;
+            border: none;
+            background: transparent;
+            border-radius: 14px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .comm-tab.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(109,40,217,0.3);
+        }
+
+        /* ── Tab Panels ── */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ── Action Cards ── */
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .action-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 16px 10px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--border);
+        }
+        .action-card:active, .action-card:hover { transform: scale(0.97); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .action-icon {
+            width: 46px; height: 46px;
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 10px;
+            font-size: 1.4rem; color: white;
+        }
+        .icon-idea { background: linear-gradient(135deg, #F59E0B, #D97706); }
+        .icon-bug  { background: linear-gradient(135deg, #EF4444, #B91C1C); }
+        .icon-love { background: linear-gradient(135deg, #10B981, #047857); }
+        .action-title { font-size: 0.8rem; font-weight: 800; color: var(--text); }
+
+        /* ── Post Box ── */
+        .post-box {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+        .user-avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; flex-shrink: 0;
+        }
+        .post-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid transparent;
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 0.95rem;
+            color: var(--text);
+            resize: none;
+            height: 100px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .post-input:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(109,40,217,0.1); }
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag-selector { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag-btn {
+            background: var(--input-bg);
+            border: 1.5px solid transparent;
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .tag-btn.active {
+            background: rgba(109,40,217,0.1);
+            color: var(--primary);
+            border-color: var(--primary-light);
+        }
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.3);
+            transition: transform 0.2s, background 0.2s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .submit-btn:active { transform: scale(0.95); }
+
+        /* ── Feed ── */
+        .feed-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+        .feed-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid var(--border);
+            animation: slideUp 0.4s ease-out forwards;
+            opacity: 0; transform: translateY(20px);
+        }
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        .fc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .fc-user { display: flex; align-items: center; gap: 10px; }
+        .fc-avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: #E0E7FF; color: #4338CA;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; flex-shrink: 0;
+        }
+        .fc-info h4 { font-size: 0.9rem; font-weight: 800; }
+        .fc-info span { font-size: 0.75rem; color: var(--text-muted); }
+        .fc-badge { font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 12px; white-space: nowrap; }
+        .badge-idea { background: rgba(245,158,11,0.1); color: #D97706; }
+        .badge-bug  { background: rgba(239,68,68,0.1); color: #B91C1C; }
+        .badge-love { background: rgba(16,185,129,0.1); color: #047857; }
+        .fc-body { font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px; }
+        .fc-footer { display: flex; gap: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .fc-action {
+            display: flex; align-items: center; gap: 6px;
+            color: var(--text-muted); font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; transition: color 0.2s;
+        }
+        .fc-action.active, .fc-action:hover { color: var(--secondary); }
+
+        /* ═══ GROUPS ═══ */
+        .groups-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .groups-header-bar h3 { font-size: 1.15rem; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .create-group-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white; border: none;
+            padding: 10px 16px; border-radius: 16px;
+            font-size: 0.8rem; font-weight: 800;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.3);
+            transition: transform 0.2s;
+            font-family: 'Cairo', sans-serif;
+        }
+        .create-group-btn:active { transform: scale(0.95); }
+
+        /* Search */
+        .group-search-box { position: relative; margin-bottom: 20px; }
+        .group-search-input {
+            width: 100%;
+            padding: 12px 20px 12px 44px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            font-size: 0.9rem; color: var(--text);
+            outline: none; font-family: 'Cairo', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .group-search-input:focus { border-color: var(--primary-light); }
+        .group-search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        /* Category Filters */
+        .group-cats { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; scrollbar-width: none; }
+        .group-cats::-webkit-scrollbar { display: none; }
+        .cat-pill {
+            flex-shrink: 0; padding: 7px 16px; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 800; cursor: pointer;
+            border: 1px solid var(--border); background: var(--card-bg); color: var(--text-muted);
+            transition: all 0.2s; white-space: nowrap; font-family: 'Cairo', sans-serif;
+        }
+        .cat-pill.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 3px 10px rgba(109,40,217,0.25); }
+
+        /* Groups Grid */
+        .groups-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        @media (max-width: 480px) { .groups-grid { grid-template-columns: 1fr; } }
+
+        /* Group Card */
+        .group-card {
+            background: var(--card-bg);
+            border-radius: 22px; overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: slideUp 0.4s ease-out forwards;
+            opacity: 0; transform: translateY(20px);
+            cursor: pointer;
+        }
+        .group-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
+        .group-cover { height: 80px; position: relative; display: flex; align-items: center; justify-content: center; }
+        .group-cover-icon { font-size: 2rem; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+        .group-members-preview { position: absolute; bottom: -14px; right: 14px; display: flex; }
+        .member-avatar-sm {
+            width: 28px; height: 28px; border-radius: 50%;
+            border: 2px solid var(--card-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.65rem; font-weight: 800; color: white;
+            margin-left: -8px;
+        }
+        .member-avatar-sm:first-child { margin-left: 0; }
+        .group-body { padding: 22px 14px 14px; }
+        .group-name { font-size: 0.95rem; font-weight: 900; margin-bottom: 4px; color: var(--text); }
+        .group-desc {
+            font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        }
+        .group-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .group-count { font-size: 0.75rem; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 4px; }
+        .group-privacy { font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 10px; }
+        .privacy-public  { background: rgba(16,185,129,0.1); color: #047857; }
+        .privacy-private { background: rgba(239,68,68,0.1); color: #B91C1C; }
+        .join-group-btn {
+            width: 100%; padding: 9px 0; border-radius: 14px; border: none;
+            font-size: 0.8rem; font-weight: 800; cursor: pointer;
+            transition: all 0.2s; font-family: 'Cairo', sans-serif;
+        }
+        .join-group-btn.not-joined { background: rgba(109,40,217,0.1); color: var(--primary); border: 1px solid rgba(109,40,217,0.2); }
+        .join-group-btn.not-joined:hover { background: var(--primary); color: white; }
+        .join-group-btn.joined { background: rgba(16,185,129,0.1); color: #047857; border: 1px solid rgba(16,185,129,0.2); }
+
+        /* ── Group Detail ── */
+        #group-detail-view { display: none; }
+        #group-detail-view.open { display: block; }
+        .group-detail-cover {
+            height: 130px; border-radius: 22px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3.5rem; color: white; position: relative; margin-bottom: 0;
+        }
+        .group-detail-back {
+            position: absolute; top: 12px; right: 12px;
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.25); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1rem; color: white; border: none;
+            backdrop-filter: blur(4px); font-family: 'Cairo', sans-serif;
+        }
+        .group-detail-info {
+            background: var(--card-bg); padding: 16px;
+            border: 1px solid var(--border); border-top: none;
+            border-radius: 0 0 22px 22px; margin-bottom: 16px;
+        }
+        .group-detail-info h2 { font-size: 1.3rem; font-weight: 900; margin-bottom: 6px; }
+        .group-detail-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px; line-height: 1.5; }
+        .group-detail-stats { display: flex; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+        .gd-stat { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); }
+        .gd-stat i { color: var(--primary); }
+        .gd-join-btn {
+            width: 100%; padding: 12px; border-radius: 16px; border: none;
+            font-size: 0.95rem; font-weight: 800; cursor: pointer;
+            font-family: 'Cairo', sans-serif; transition: all 0.2s;
+            background: var(--primary); color: white;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.3);
+        }
+        .gd-join-btn.joined { background: rgba(16,185,129,0.1); color: #047857; box-shadow: none; border: 1px solid rgba(16,185,129,0.3); }
+
+        /* Members */
+        .members-section { background: var(--card-bg); border-radius: 20px; padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .members-section h4 { font-size: 0.95rem; font-weight: 900; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .members-list { display: flex; flex-direction: column; gap: 10px; }
+        .member-row { display: flex; align-items: center; gap: 10px; }
+        .member-row-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; color: white; flex-shrink: 0; }
+        .member-row-info { flex: 1; }
+        .member-row-name { font-size: 0.85rem; font-weight: 800; }
+        .member-row-role { font-size: 0.7rem; color: var(--text-muted); }
+        .member-badge { font-size: 0.65rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; background: rgba(109,40,217,0.1); color: var(--primary); }
+
+        /* ── Create Group Modal ── */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(6px);
+            z-index: 3000;
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: var(--card-bg); border-radius: 28px; padding: 28px 24px;
+            width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto;
+            animation: modalIn 0.3s ease-out;
+        }
+        @keyframes modalIn { from { opacity:0; transform: scale(0.88) translateY(24px); } to { opacity:1; transform: scale(1) translateY(0); } }
+        .modal-title { font-size: 1.25rem; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .modal-title .modal-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1rem;
+        }
+        .modal-field { margin-bottom: 16px; }
+        .modal-field label { display: block; font-size: 0.85rem; font-weight: 800; margin-bottom: 8px; color: var(--text); }
+        .modal-field input, .modal-field textarea, .modal-field select {
+            width: 100%; padding: 12px 16px;
+            background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px;
+            font-size: 0.9rem; color: var(--text); outline: none;
+            font-family: 'Cairo', sans-serif; transition: border-color 0.2s;
+        }
+        .modal-field input:focus, .modal-field textarea:focus, .modal-field select:focus { border-color: var(--primary-light); }
+        .modal-field textarea { height: 80px; resize: none; }
+        .icon-picker { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-top: 8px; }
+        .icon-option {
+            width: 100%; aspect-ratio: 1;
+            border: 2px solid var(--border); border-radius: 10px; background: var(--input-bg);
+            font-size: 1.2rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        }
+        .icon-option.selected { border-color: var(--primary); background: rgba(109,40,217,0.1); }
+        .color-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .color-option { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
+        .color-option.selected { border-color: white; outline: 2.5px solid var(--primary); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-cancel {
+            flex: 1; padding: 12px; border-radius: 16px; border: 1px solid var(--border);
+            background: transparent; color: var(--text-muted);
+            font-size: 0.9rem; font-weight: 800; cursor: pointer; font-family: 'Cairo', sans-serif;
+        }
+        .modal-submit {
+            flex: 2; padding: 12px; border-radius: 16px; border: none;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white; font-size: 0.9rem; font-weight: 800; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(109,40,217,0.3); font-family: 'Cairo', sans-serif; transition: transform 0.2s;
+        }
+        .modal-submit:active { transform: scale(0.97); }
+
+        /* ── Bottom Nav ── */
+        .mobile-bottom-nav {
+            position: fixed; bottom: 12px; left: 12px; right: 12px;
+            height: var(--nav-h);
+            background: rgba(42, 24, 80, 0.94);
+            backdrop-filter: blur(20px);
+            border-radius: 22px;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 0 10px; z-index: 1000;
+            box-shadow: 0 12px 40px rgba(46, 28, 82, 0.45);
+        }
+        .nav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #9CA3AF; text-decoration: none; font-size: 0.65rem; font-weight: 700;
+            gap: 4px; transition: all 0.3s; height: 100%;
+        }
+        .nav-item i { font-size: 1.35rem; }
+        .nav-item.active { color: #A78BFA; background: rgba(109,40,217,0.25); border-radius: 16px; margin: 6px 2px; height: calc(100% - 12px); }
+        @media (min-width: 769px) {
+            .mobile-bottom-nav {
+                display: flex !important; position: fixed !important;
+                bottom: 20px !important; left: 50% !important; right: auto !important;
+                transform: translateX(-50%) !important;
+                width: calc(100% - 40px) !important; max-width: 500px !important;
+                border-radius: 30px !important; z-index: 1000 !important;
+            }
+            body { padding-bottom: 20px; }
+            .comm-header { border-bottom-left-radius: 60px; border-bottom-right-radius: 60px; }
+        }
+
+        /* ── Toast ── */
+        .toast-msg {
+            position: fixed;
+            bottom: calc(var(--nav-h) + 28px);
+            left: 50%; transform: translateX(-50%) translateY(16px);
+            background: #1E1B4B; color: white;
+            padding: 12px 24px; border-radius: 20px;
+            font-size: 0.85rem; font-weight: 700;
+            opacity: 0; transition: all 0.3s; z-index: 4000; white-space: nowrap;
+            pointer-events: none;
+        }
+        .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── Empty State ── */
+        .empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 2.5rem; display: block; margin-bottom: 12px; opacity: 0.35; }
+        .empty-state p { font-weight: 700; margin-bottom: 16px; }
+
+        /* ── Group Sub Tabs ── */
+        .group-sub-tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 4px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            gap: 4px;
+        }
+        .g-sub-tab {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .g-sub-tab.active {
+            background: rgba(109,40,217,0.1);
+            color: var(--primary);
+        }
+        
+        /* ── Group Join Notice ── */
+        .join-notice {
+            background: rgba(109, 40, 217, 0.04);
+            border: 1.5px dashed rgba(109, 40, 217, 0.2);
+            border-radius: 20px;
+            padding: 24px 16px;
+            text-align: center;
+            color: var(--text);
+            font-size: 0.88rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .join-notice i {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        /* ── Image Upload & Preview inside Post Box ── */
+        .image-preview-container {
+            position: relative;
+            margin-top: 12px;
+            border-radius: 14px;
+            overflow: hidden;
+            max-height: 200px;
+            display: none;
+            border: 1px solid var(--border);
+        }
+        .image-preview-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .remove-img-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+        .remove-img-btn:hover {
+            background: rgba(220,38,38,0.8);
+        }
+        
+        .add-img-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--input-bg);
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 16px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .add-img-label:hover {
+            background: rgba(109,40,217,0.1);
+            color: var(--primary);
+        }
+
+        /* ── Post attached image ── */
+        .post-attached-img {
+            width: 100%;
+            border-radius: 16px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            max-height: 350px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .post-attached-img:hover {
+            opacity: 0.95;
+        }
+
+        /* ── Comments Section ── */
+        .comments-section {
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 8px 12px;
+            background: var(--input-bg);
+            border-radius: 14px;
+            animation: slideUp 0.3s ease-out;
+        }
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+        }
+        .comment-content {
+            flex: 1;
+        }
+        .comment-user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        .comment-user-name {
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+        .comment-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+        .comment-text {
+            font-size: 0.85rem;
+            line-height: 1.45;
+            color: var(--text);
+        }
+        
+        .comment-input-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .comment-input {
+            flex: 1;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            font-family: 'Cairo', sans-serif;
+            transition: border-color 0.2s;
+        }
+        .comment-input:focus {
+            border-color: var(--primary-light);
+        }
+        .comment-submit-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .comment-submit-btn:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+</script>
+
+<!-- Toast -->
+<div class="toast-msg" id="toast-msg"></div>
+
+<!-- Header -->
+<header class="comm-header">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+    <div class="comm-header-content">
+        <h1 class="comm-title">مجتمع LodeaLode 🌟</h1>
+        <p class="comm-subtitle">تواصل مع المجتمع، شارك أفكارك، وانضم إلى مجموعات تهمك.</p>
+    </div>
+</header>
+
+<!-- Main Content -->
+<main class="comm-container">
+
+    <!-- Tab Navigation -->
+    <div class="comm-tabs">
+        <button class="comm-tab active" id="tab-feed" onclick="switchTab('feed')">
+            <i class="fas fa-stream"></i> المنشورات
+        </button>
+        <button class="comm-tab" id="tab-groups" onclick="switchTab('groups')">
+            <i class="fas fa-users"></i> المجموعات
+        </button>
+        <button class="comm-tab" id="tab-my-groups" onclick="switchTab('my-groups')">
+            <i class="fas fa-user-friends"></i> مجموعاتي
+        </button>
+    </div>
+
+    <!-- ═══ FEED TAB ═══ -->
+    <div class="tab-panel active" id="panel-feed">
+        <div class="action-cards">
+            <div class="action-card" onclick="selectTag('idea')">
+                <div class="action-icon icon-idea"><i class="fas fa-lightbulb"></i></div>
+                <div class="action-title">فكرة جديدة</div>
+            </div>
+            <div class="action-card" onclick="selectTag('bug')">
+                <div class="action-icon icon-bug"><i class="fas fa-bug"></i></div>
+                <div class="action-title">مشكلة</div>
+            </div>
+            <div class="action-card" onclick="selectTag('love')">
+                <div class="action-icon icon-love"><i class="fas fa-heart"></i></div>
+                <div class="action-title">رأيك بنا</div>
+            </div>
+        </div>
+
+        <div class="post-box">
+            <div class="post-header">
+                <div class="user-avatar" id="user-avatar-feed"><i class="fas fa-user"></i></div>
+                <div style="font-weight:800;font-size:1rem;">شاركنا أفكارك</div>
+            </div>
+            <textarea class="post-input" id="post-textarea" placeholder="ما الذي يدور في ذهنك؟ كيف يمكننا تحسين الموقع؟..."></textarea>
+            <div class="post-actions">
+                <div class="tag-selector">
+                    <button class="tag-btn active" id="tag-idea" onclick="selectTag('idea')">💡 فكرة</button>
+                    <button class="tag-btn" id="tag-bug"  onclick="selectTag('bug')">🐞 مشكلة</button>
+                    <button class="tag-btn" id="tag-love" onclick="selectTag('love')">❤️ تجربة</button>
+                </div>
+                <button class="submit-btn" onclick="submitPost()">نشر</button>
+            </div>
+        </div>
+
+        <h3 class="feed-title"><i class="fas fa-stream"></i> أحدث المشاركات</h3>
+        <div id="feed-container"></div>
+    </div>
+
+    <!-- ═══ GROUPS TAB ═══ -->
+    <div class="tab-panel" id="panel-groups">
+
+        <!-- List View -->
+        <div id="groups-list-view">
+            <div class="groups-header-bar">
+                <h3><i class="fas fa-users" style="color:var(--primary)"></i> المجموعات</h3>
+                <button class="create-group-btn" onclick="openCreateModal()">
+                    <i class="fas fa-plus"></i> إنشاء مجموعة
+                </button>
+            </div>
+            <div class="group-search-box">
+                <i class="fas fa-search group-search-icon"></i>
+                <input type="text" class="group-search-input" id="group-search" placeholder="ابحث عن مجموعة..." oninput="filterGroups(this.value)">
+            </div>
+            <div class="group-cats" id="group-cats">
+                <button class="cat-pill active" onclick="filterByCategory('all',this)">الكل</button>
+                <button class="cat-pill" onclick="filterByCategory('tech',this)">💻 التقنية</button>
+                <button class="cat-pill" onclick="filterByCategory('shopping',this)">🛒 التسوق</button>
+                <button class="cat-pill" onclick="filterByCategory('deals',this)">🔥 العروض</button>
+                <button class="cat-pill" onclick="filterByCategory('electronics',this)">📱 الإلكترونيات</button>
+                <button class="cat-pill" onclick="filterByCategory('home',this)">🏠 المنزل</button>
+                <button class="cat-pill" onclick="filterByCategory('fashion',this)">👗 الموضة</button>
+            </div>
+            <div class="groups-grid" id="groups-grid"></div>
+        </div>
+
+        <!-- Detail View -->
+        <div id="group-detail-view"></div>
+    </div>
+
+    <!-- ═══ MY GROUPS TAB ═══ -->
+    <div class="tab-panel" id="panel-my-groups">
+        <div class="groups-header-bar">
+            <h3><i class="fas fa-user-friends" style="color:var(--primary)"></i> مجموعاتي</h3>
+            <button class="create-group-btn" onclick="openCreateModal()">
+                <i class="fas fa-plus"></i> جديد
+            </button>
+        </div>
+        <div class="groups-grid" id="my-groups-grid"></div>
+    </div>
+
+</main>
+
+<!-- ═══ CREATE GROUP MODAL ═══ -->
+<div class="modal-overlay" id="create-modal" onclick="handleModalClick(event)">
+    <div class="modal-box">
+        <div class="modal-title">
+            <div class="modal-icon"><i class="fas fa-users"></i></div>
+            إنشاء مجموعة جديدة
+        </div>
+        <div class="modal-field">
+            <label>اسم المجموعة *</label>
+            <input type="text" id="gn-name" placeholder="مثال: عشاق الإلكترونيات" maxlength="50">
+        </div>
+        <div class="modal-field">
+            <label>وصف المجموعة</label>
+            <textarea id="gn-desc" placeholder="أخبر الآخرين عن هذه المجموعة..."></textarea>
+        </div>
+        <div class="modal-field">
+            <label>الفئة</label>
+            <select id="gn-cat">
+                <option value="tech">💻 التقنية</option>
+                <option value="shopping">🛒 التسوق</option>
+                <option value="deals">🔥 العروض</option>
+                <option value="electronics">📱 الإلكترونيات</option>
+                <option value="home">🏠 المنزل</option>
+                <option value="fashion">👗 الموضة</option>
+            </select>
+        </div>
+        <div class="modal-field">
+            <label>أيقونة المجموعة</label>
+            <div class="icon-picker" id="gn-icon-picker"></div>
+        </div>
+        <div class="modal-field">
+            <label>لون الغلاف</label>
+            <div class="color-picker" id="gn-color-picker"></div>
+        </div>
+        <div class="modal-field">
+            <label>الخصوصية</label>
+            <div style="display:flex;gap:10px;margin-top:4px;">
+                <button class="tag-btn active" id="priv-public"  onclick="setPrivacy('public',this)">🌐 عامة</button>
+                <button class="tag-btn"        id="priv-private" onclick="setPrivacy('private',this)">🔒 خاصة</button>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeCreateModal()">إلغاء</button>
+            <button class="modal-submit" onclick="createGroup()"><i class="fas fa-plus"></i> إنشاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="mobile-bottom-nav">
+    <a href="index.html"    class="nav-item"><i class="fas fa-home"></i><span>الرئيسية</span></a>
+    <a href="rooms.html"    class="nav-item"><i class="fas fa-shopping-cart"></i><span>غرفي</span></a>
+    <a href="community.html" class="nav-item active"><i class="fas fa-comments"></i><span>المجتمع</span></a>
+    <a href="products.html" class="nav-item"><i class="fas fa-shopping-bag"></i><span>المنتجات</span></a>
+    <a href="settings.html" class="nav-item"><i class="far fa-user"></i><span>حسابي</span></a>
+</nav>
+
+<!-- Scripts — loaded at bottom so DOM is ready before any code runs -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="auth.js"></script>
+<script>
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+var currentTag     = 'idea';
+var currentSession = null;
+var currentPrivacy = 'public';
+var selectedIcon   = '🛒';
+var selectedColor  = 'linear-gradient(135deg,#6D28D9,#8B5CF6)';
+var currentCat     = 'all';
+var joinedGroups   = [];
+var allGroups      = [];
+
+try { joinedGroups = JSON.parse(localStorage.getItem('joinedGroups') || '[]'); } catch(e) { joinedGroups = []; }
+
+var ICONS  = ['🛒','💻','📱','🏠','👗','🔥','🎮','📸','🚗','🍕','⚽','🎵','💄','🧸','📚','💡'];
+var COLORS = [
+    'linear-gradient(135deg,#6D28D9,#8B5CF6)',
+    'linear-gradient(135deg,#EC4899,#F97316)',
+    'linear-gradient(135deg,#10B981,#3B82F6)',
+    'linear-gradient(135deg,#F59E0B,#EF4444)',
+    'linear-gradient(135deg,#3B82F6,#06B6D4)',
+    'linear-gradient(135deg,#8B5CF6,#EC4899)',
+    'linear-gradient(135deg,#14B8A6,#10B981)',
+    'linear-gradient(135deg,#F97316,#EF4444)'
+];
+var COLOR_DOTS = ['#7C3AED','#EC4899','#10B981','#F59E0B','#3B82F6','#8B5CF6','#14B8A6','#F97316'];
+
+var DEFAULT_GROUPS = [
+    { id:'g1', name:'عشاق الإلكترونيات', desc:'نقاشات حول أحدث الأجهزة والتقنيات وأفضل العروض.', category:'electronics', icon:'📱', color:'linear-gradient(135deg,#3B82F6,#06B6D4)', privacy:'public',  members:['أ','س','ي','م','ر'], membersCount:128, postsCount:45 },
+    { id:'g2', name:'صيادو العروض',       desc:'شارك أفضل العروض والخصومات قبل انتهائها!',          category:'deals',       icon:'🔥', color:'linear-gradient(135deg,#F59E0B,#EF4444)', privacy:'public',  members:['ه','ف','أ','ن'],   membersCount:312, postsCount:89 },
+    { id:'g3', name:'منزلي جنتي',         desc:'كل ما يخص ديكور وأدوات المنزل بأسعار مناسبة.',     category:'home',        icon:'🏠', color:'linear-gradient(135deg,#10B981,#3B82F6)', privacy:'public',  members:['س','ز','ع'],       membersCount:74,  postsCount:31 },
+    { id:'g4', name:'الموضة والستايل',    desc:'أحدث صيحات الموضة وأفضل ماركات الملابس.',           category:'fashion',     icon:'👗', color:'linear-gradient(135deg,#EC4899,#F97316)', privacy:'public',  members:['ل','م','ر','أ','ه','ف'], membersCount:201, postsCount:67 },
+    { id:'g5', name:'مطبخ التسوق الذكي', desc:'نصائح حول التسوق الذكي وتوفير المال.',             category:'shopping',    icon:'🛒', color:'linear-gradient(135deg,#6D28D9,#8B5CF6)', privacy:'public',  members:['ع','ز','س'],       membersCount:95,  postsCount:28 },
+    { id:'g6', name:'مجتمع البرمجة',     desc:'مجموعة خاصة لمحبي التقنية، بالدعوة فقط.',           category:'tech',        icon:'💻', color:'linear-gradient(135deg,#1E1B4B,#6D28D9)', privacy:'private', members:['م','أ'],           membersCount:42,  postsCount:19 }
+];
+
+var MOCK_POSTS = [
+    { id:'m1', user_name:'أحمد بن علي',  user_initial:'أ', user_avatar_bg:'#6D28D9', user_avatar_color:'white', tag_class:'badge-idea', tag_text:'💡 فكرة جديدة', content:'أقترح إضافة خاصية مقارنة الأسعار بين المنتجات في نفس الغرفة، سيكون رائعاً للمشترين!', likes_count:24, comments_count:7,  created_at:new Date(Date.now()-3600000).toISOString()  },
+    { id:'m2', user_name:'سارة مهداوي', user_initial:'س', user_avatar_bg:'#EC4899', user_avatar_color:'white', tag_class:'badge-love', tag_text:'❤️ تجربة شراء', content:'تجربة رائعة! اشتريت جهاز تلفاز وتوصل في الوقت المحدد وبسعر أفضل بـ30% من السوق. شكراً LodeaLode!', likes_count:41, comments_count:12, created_at:new Date(Date.now()-7200000).toISOString()  },
+    { id:'m3', user_name:'ياسين بوعزيز', user_initial:'ي', user_avatar_bg:'#10B981', user_avatar_color:'white', tag_class:'badge-bug',  tag_text:'🐞 مشكلة تقنية', content:'أحياناً تكون صفحة المنتج بطيئة في التحميل على الموبايل، هل يمكن تحسين الأداء؟', likes_count:15, comments_count:4,  created_at:new Date(Date.now()-86400000).toISOString() },
+    { id:'m4', user_name:'إيمان حمزة',  user_initial:'إ', user_avatar_bg:'#F59E0B', user_avatar_color:'white', tag_class:'badge-idea', tag_text:'💡 فكرة جديدة', content:'لو تضيفوا نظام إشعارات عند انخفاض السعر بشكل كبير سيكون ممتازاً!', likes_count:33, comments_count:9,  created_at:new Date(Date.now()-172800000).toISOString()},
+    { id:'m5', user_name:'مصطفى قاسم', user_initial:'م', user_avatar_bg:'#3B82F6', user_avatar_color:'white', tag_class:'badge-love', tag_text:'❤️ تجربة شراء', content:'أول مرة أستعمل الشراء الجماعي وأنا مبهوت! وفرت أكثر من 35,000 دج على سماعات AirPods 🙌', likes_count:56, comments_count:18, created_at:new Date(Date.now()-259200000).toISOString()}
+];
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', function() {
+    // Init auth
+    if (window.LodeaAuth) {
+        window.LodeaAuth.getSessionSafe().then(function(s){ currentSession = s; }).catch(function(){});
+    }
+    // Init page
+    loadPosts();
+    buildGroups();
+    buildModal();
+    initGroupPosts();
+});
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+function showToast(msg) {
+    var t = document.getElementById('toast-msg');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+/* ═══════════════════════════════════
+   TAB SWITCHING
+═══════════════════════════════════ */
+function switchTab(name) {
+    var tabs   = document.querySelectorAll('.comm-tab');
+    var panels = document.querySelectorAll('.tab-panel');
+    tabs.forEach(function(t){ t.classList.remove('active'); });
+    panels.forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('tab-' + name).classList.add('active');
+    document.getElementById('panel-' + name).classList.add('active');
+    if (name === 'groups')    renderGroups(filterGroupList(), 'groups-grid');
+    if (name === 'my-groups') renderMyGroups();
+}
+
+/* ═══════════════════════════════════
+   FEED
+═══════════════════════════════════ */
+function selectTag(tag) {
+    document.querySelectorAll('.tag-btn').forEach(function(b){ b.classList.remove('active'); });
+    var el = document.getElementById('tag-' + tag);
+    if (el) el.classList.add('active');
+    currentTag = tag;
+    var ta = document.getElementById('post-textarea');
+    if (ta) ta.focus();
+}
+
+function timeAgo(str) {
+    var s = Math.floor((Date.now() - new Date(str)) / 1000);
+    var pairs = [[31536000,'سنة'],[2592000,'شهر'],[86400,'يوم'],[3600,'ساعة'],[60,'دقيقة']];
+    for (var i = 0; i < pairs.length; i++) {
+        var n = Math.floor(s / pairs[i][0]);
+        if (n >= 1) return 'منذ ' + n + ' ' + pairs[i][1];
+    }
+    return 'الآن';
+}
+
+function loadPosts() {
+    var container = document.getElementById('feed-container');
+    if (!container) return;
+
+    function render(posts) {
+        if (!posts || !posts.length) {
+            container.innerHTML = '<div class="empty-state"><i class="far fa-comment-dots"></i><p>لا توجد منشورات. كن أول من يشارك!</p></div>';
+            return;
+        }
+        var html = '';
+        posts.forEach(function(p, i) {
+            html += '<div class="feed-card" style="animation-delay:' + (i * 0.08) + 's;">' +
+                '<div class="fc-header">' +
+                    '<div class="fc-user">' +
+                        '<div class="fc-avatar" style="background:' + (p.user_avatar_bg||'#6D28D9') + ';color:' + (p.user_avatar_color||'white') + ';">' + (p.user_initial||'؟') + '</div>' +
+                        '<div class="fc-info"><h4>' + (p.user_name||'مستخدم') + '</h4><span>' + timeAgo(p.created_at) + '</span></div>' +
+                    '</div>' +
+                    '<div class="fc-badge ' + (p.tag_class||'badge-idea') + '">' + (p.tag_text||'فكرة') + '</div>' +
+                '</div>' +
+                '<div class="fc-body">' + p.content + '</div>' +
+                '<div class="fc-footer">' +
+                    '<div class="fc-action" onclick="toggleLike(this,\'' + p.id + '\')"><i class="fas fa-heart"></i> <span>' + (p.likes_count||0) + '</span></div>' +
+                    '<div class="fc-action"><i class="fas fa-comment"></i> <span>' + (p.comments_count||0) + '</span></div>' +
+                '</div>' +
+            '</div>';
+        });
+        container.innerHTML = html;
+    }
+
+    // Try Supabase, fall back to mock
+    var client = null;
+    try { if (window.LodeaAuth) client = window.LodeaAuth.getSupabaseClient(); } catch(e) {}
+    if (client) {
+        client.from('community_posts').select('*').order('created_at', { ascending: false })
+            .then(function(res) { render((!res.error && res.data && res.data.length) ? res.data : MOCK_POSTS); })
+            .catch(function(){ render(MOCK_POSTS); });
+    } else {
+        render(MOCK_POSTS);
+    }
+}
+
+function toggleLike(el, postId) {
+    el.classList.toggle('active');
+    var span = el.querySelector('span');
+    var n = parseInt(span.textContent) + (el.classList.contains('active') ? 1 : -1);
+    span.textContent = n;
+}
+
+function submitPost() {
+    var input = document.getElementById('post-textarea');
+    var text  = input.value.trim();
+    if (!text) { showToast('يرجى كتابة شيء قبل النشر!'); return; }
+    var btn = document.querySelector('#panel-feed .submit-btn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    btn.disabled = true;
+
+    var labels = { idea:['badge-idea','💡 فكرة جديدة'], bug:['badge-bug','🐞 مشكلة تقنية'], love:['badge-love','❤️ تجربة شراء'] };
+    var lbl = labels[currentTag] || labels['idea'];
+    var userName = 'مستخدم';
+    var initial  = 'م';
+    if (currentSession && currentSession.user && currentSession.user.email) {
+        userName = currentSession.user.email.split('@')[0];
+        initial  = userName.charAt(0).toUpperCase();
+    }
+    var newPost = { id:'local_' + Date.now(), user_name:userName, user_initial:initial, user_avatar_bg:'#6D28D9', user_avatar_color:'white', tag_class:lbl[0], tag_text:lbl[1], content:text, likes_count:0, comments_count:0, created_at:new Date().toISOString() };
+    MOCK_POSTS.unshift(newPost);
+    input.value = '';
+    btn.innerHTML = 'نشر';
+    btn.disabled = false;
+    loadPosts();
+    showToast('✅ تم نشر منشورك بنجاح!');
+}
+
+/* ═══════════════════════════════════
+   GROUPS
+═══════════════════════════════════ */
+function buildGroups() {
+    var saved = [];
+    try { saved = JSON.parse(localStorage.getItem('customGroups') || '[]'); } catch(e) {}
+    allGroups = DEFAULT_GROUPS.concat(saved);
+    renderGroups(allGroups, 'groups-grid');
+}
+
+function filterGroupList() {
+    var q = (document.getElementById('group-search') || {}).value || '';
+    return allGroups.filter(function(g) {
+        var matchCat  = currentCat === 'all' || g.category === currentCat;
+        var matchText = !q || g.name.indexOf(q) !== -1 || (g.desc||'').indexOf(q) !== -1;
+        return matchCat && matchText;
+    });
+}
+
+function filterGroups(q) { renderGroups(filterGroupList(), 'groups-grid'); }
+
+function filterByCategory(cat, el) {
+    currentCat = cat;
+    document.querySelectorAll('.cat-pill').forEach(function(p){ p.classList.remove('active'); });
+    el.classList.add('active');
+    renderGroups(filterGroupList(), 'groups-grid');
+}
+
+var AVATAR_COLORS = ['#6D28D9','#EC4899','#10B981','#F59E0B','#3B82F6','#8B5CF6','#14B8A6'];
+var MEMBER_NAMES  = ['أحمد بن علي','سارة مهداوي','ياسين بوعزيز','إيمان حمزة','مصطفى قاسم','ليلى عبد الرحمن','فارس بلقاسم'];
+
+function renderGroups(groups, containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    if (!groups.length) {
+        container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-users"></i><p>لا توجد مجموعات</p></div>';
+        return;
+    }
+    var html = '';
+    groups.forEach(function(g, i) {
+        var isJoined = joinedGroups.indexOf(g.id) !== -1;
+        var membersHtml = '';
+        (g.members || []).slice(0, 4).forEach(function(m, j) {
+            membersHtml += '<div class="member-avatar-sm" style="background:' + AVATAR_COLORS[j % AVATAR_COLORS.length] + ';">' + m + '</div>';
+        });
+        html += '<div class="group-card" style="animation-delay:' + (i * 0.07) + 's;" onclick="openGroupDetail(\'' + g.id + '\')">' +
+            '<div class="group-cover" style="background:' + g.color + ';">' +
+                '<span class="group-cover-icon">' + g.icon + '</span>' +
+                '<div class="group-members-preview">' + membersHtml + '</div>' +
+            '</div>' +
+            '<div class="group-body">' +
+                '<div class="group-name">' + g.name + '</div>' +
+                '<div class="group-desc">' + (g.desc || '') + '</div>' +
+                '<div class="group-meta">' +
+                    '<div class="group-count"><i class="fas fa-users"></i> ' + (g.membersCount || 0) + ' عضو</div>' +
+                    '<span class="group-privacy ' + (g.privacy === 'public' ? 'privacy-public' : 'privacy-private') + '">' +
+                        (g.privacy === 'public' ? '🌐 عامة' : '🔒 خاصة') +
+                    '</span>' +
+                '</div>' +
+                '<button class="join-group-btn ' + (isJoined ? 'joined' : 'not-joined') + '" onclick="event.stopPropagation();toggleJoin(\'' + g.id + '\',this)">' +
+                    (isJoined ? '<i class="fas fa-check"></i> منضم' : '<i class="fas fa-plus"></i> انضمام') +
+                '</button>' +
+            '</div>' +
+        '</div>';
+    });
+    container.innerHTML = html;
+}
+
+function renderMyGroups() {
+    var mine = allGroups.filter(function(g){ return joinedGroups.indexOf(g.id) !== -1; });
+    if (!mine.length) {
+        var c = document.getElementById('my-groups-grid');
+        if (c) c.innerHTML = '<div class="empty-state" style="grid-column:1/-1;">' +
+            '<i class="fas fa-user-plus"></i>' +
+            '<p>لم تنضم إلى أي مجموعة بعد</p>' +
+            '<button class="create-group-btn" style="margin:0 auto;" onclick="switchTab(\'groups\')">' +
+            '<i class="fas fa-search"></i> استعرض المجموعات</button></div>';
+        return;
+    }
+    renderGroups(mine, 'my-groups-grid');
+}
+
+function toggleJoin(groupId, btn) {
+    var group = allGroups.filter(function(g){ return g.id === groupId; })[0];
+    var idx   = joinedGroups.indexOf(groupId);
+    if (idx === -1) {
+        joinedGroups.push(groupId);
+        btn.className = 'join-group-btn joined';
+        btn.innerHTML = '<i class="fas fa-check"></i> منضم';
+        if (group) group.membersCount = (group.membersCount || 0) + 1;
+        showToast('✅ انضممت إلى "' + (group ? group.name : 'المجموعة') + '"');
+    } else {
+        joinedGroups.splice(idx, 1);
+        btn.className = 'join-group-btn not-joined';
+        btn.innerHTML = '<i class="fas fa-plus"></i> انضمام';
+        if (group) group.membersCount = Math.max(0, (group.membersCount || 1) - 1);
+        showToast('👋 غادرت "' + (group ? group.name : 'المجموعة') + '"');
+    }
+    try { localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups)); } catch(e) {}
+}
+
+var currentGroupId = null;
+var currentGroupSubTab = 'posts';
+var groupPostImageBase64 = '';
+
+var DEFAULT_GROUP_POSTS = {
+    'g1': [
+        {
+            id: 'gp_1_1',
+            groupId: 'g1',
+            user_name: 'أحمد بن علي',
+            user_initial: 'أ',
+            user_avatar_bg: '#6D28D9',
+            content: 'يا جماعة، ما هو رأيكم في هاتف Redmi Note الجديد؟ هل يستحق الشراء مقارنة بسعره؟',
+            image: '',
+            likes_count: 14,
+            liked_by_me: false,
+            created_at: new Date(Date.now() - 3600000 * 2).toISOString(),
+            comments: [
+                { id: 'gc_1_1_1', user_name: 'ياسين بوعزيز', user_initial: 'ي', user_avatar_bg: '#10B981', content: 'نعم، هاتف ممتاز جداً وبطاريته تدوم طويلاً.', created_at: new Date(Date.now() - 3600000 * 1.5).toISOString() },
+                { id: 'gc_1_1_2', user_name: 'مصطفى قاسم', user_initial: 'م', user_avatar_bg: '#3B82F6', content: 'أنصحك بنسخة Pro المعالج فيها أفضل بكثير للألعاب.', created_at: new Date(Date.now() - 3600000).toISOString() }
+            ]
+        },
+        {
+            id: 'gp_1_2',
+            groupId: 'g1',
+            user_name: 'سارة مهداوي',
+            user_initial: 'س',
+            user_avatar_bg: '#EC4899',
+            content: 'اشتريت هذه السماعات العازلة للضوضاء مؤخراً وهي مذهلة جداً! الصوت نقي والبطارية تدوم طويلاً.',
+            image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60',
+            likes_count: 28,
+            liked_by_me: false,
+            created_at: new Date(Date.now() - 3600000 * 5).toISOString(),
+            comments: [
+                { id: 'gc_1_2_1', user_name: 'أحمد بن علي', user_initial: 'أ', user_avatar_bg: '#6D28D9', content: 'من أين اشتريتها وبكم؟ هل هناك عرض عليها؟', created_at: new Date(Date.now() - 3600000 * 4).toISOString() }
+            ]
+        }
+    ],
+    'g2': [
+        {
+            id: 'gp_2_1',
+            groupId: 'g2',
+            user_name: 'إيمان حمزة',
+            user_initial: 'إ',
+            user_avatar_bg: '#F59E0B',
+            content: 'خصم 50% على الأحذية الرياضية في موقع LodeaLode لفترة محدودة جداً! أسرعوا قبل نفاد الكمية.',
+            image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60',
+            likes_count: 42,
+            liked_by_me: false,
+            created_at: new Date(Date.now() - 3600000 * 3).toISOString(),
+            comments: [
+                { id: 'gc_2_1_1', user_name: 'سارة مهداوي', user_initial: 'س', user_avatar_bg: '#EC4899', content: 'شكراً لكِ! لقد قمت بطلب زوجين الآن وتأكد الخصم فعلاً 😍', created_at: new Date(Date.now() - 3600000 * 2).toISOString() }
+            ]
+        }
+    ],
+    'g3': [
+        {
+            id: 'gp_3_1',
+            groupId: 'g3',
+            user_name: 'ليلى عبد الرحمن',
+            user_initial: 'ل',
+            user_avatar_bg: '#8B5CF6',
+            content: 'ما رأيكم في تنسيق الألوان هذا لغرفة المعيشة الجديدة؟ هل ترون أن الإضاءة مناسبة؟',
+            image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&auto=format&fit=crop&q=60',
+            likes_count: 19,
+            liked_by_me: false,
+            created_at: new Date(Date.now() - 3600000 * 6).toISOString(),
+            comments: []
+        }
+    ]
+};
+
+function initGroupPosts() {
+    if (!localStorage.getItem('groupPosts')) {
+        localStorage.setItem('groupPosts', JSON.stringify(DEFAULT_GROUP_POSTS));
+    }
+}
+
+function getGroupPosts(groupId) {
+    try {
+        var all = JSON.parse(localStorage.getItem('groupPosts') || '{}');
+        return all[groupId] || [];
+    } catch(e) {
+        return [];
+    }
+}
+
+function saveGroupPosts(groupId, posts) {
+    try {
+        var all = JSON.parse(localStorage.getItem('groupPosts') || '{}');
+        all[groupId] = posts;
+        localStorage.setItem('groupPosts', JSON.stringify(all));
+        
+        var group = allGroups.filter(function(g){ return g.id === groupId; })[0];
+        if (group) {
+            group.postsCount = posts.length;
+            if (groupId.indexOf('cg_') === 0) {
+                var saved = JSON.parse(localStorage.getItem('customGroups') || '[]');
+                var cg = saved.filter(function(g){ return g.id === groupId; })[0];
+                if (cg) {
+                    cg.postsCount = posts.length;
+                    localStorage.setItem('customGroups', JSON.stringify(saved));
+                }
+            }
+        }
+    } catch(e) {
+        console.error('Failed to save group posts:', e);
+    }
+}
+
+function compressImage(file, callback) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+            var canvas = document.createElement('canvas');
+            var max_width = 800;
+            var max_height = 800;
+            var width = img.width;
+            var height = img.height;
+            if (width > height) {
+                if (width > max_width) {
+                    height = Math.round(height * max_width / width);
+                    width = max_width;
+                }
+            } else {
+                if (height > max_height) {
+                    width = Math.round(width * max_height / height);
+                    height = max_height;
+                }
+            }
+            canvas.width = width;
+            canvas.height = height;
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            var dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+            callback(dataUrl);
+        };
+        img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+var referrerTab = 'groups';
+
+function openGroupDetail(groupId) {
+    var group = allGroups.filter(function(g){ return g.id === groupId; })[0];
+    if (!group) return;
+    var isJoined = joinedGroups.indexOf(group.id) !== -1;
+    
+    // Track where we are opening this group from
+    var myGroupsPanel = document.getElementById('panel-my-groups');
+    if (myGroupsPanel && myGroupsPanel.classList.contains('active')) {
+        referrerTab = 'my-groups';
+    } else {
+        referrerTab = 'groups';
+    }
+    
+    // Switch to groups tab panel so that group-detail-view is visible to the user
+    switchTab('groups');
+    
+    currentGroupId = groupId;
+    currentGroupSubTab = 'posts';
+
+    var detailEl = document.getElementById('group-detail-view');
+    detailEl.innerHTML =
+        '<div class="group-detail-cover" style="background:' + group.color + ';">' +
+            '<span>' + group.icon + '</span>' +
+            '<button class="group-detail-back" onclick="closeGroupDetail()"><i class="fas fa-arrow-right"></i></button>' +
+        '</div>' +
+        '<div class="group-detail-info">' +
+            '<h2>' + group.name + '</h2>' +
+            '<p>' + (group.desc || 'مجموعة رائعة للتواصل ومشاركة الأفكار!') + '</p>' +
+            '<div class="group-detail-stats">' +
+                '<div class="gd-stat"><i class="fas fa-users"></i> <span id="gd-stat-members">' + (group.membersCount||0) + '</span> عضو</div>' +
+                '<div class="gd-stat"><i class="fas fa-stream"></i> <span id="gd-stat-posts">' + (group.postsCount||0) + '</span> منشور</div>' +
+                '<div class="gd-stat"><i class="fas ' + (group.privacy==='public'?'fa-globe':'fa-lock') + '"></i> ' + (group.privacy==='public'?'عامة':'خاصة') + '</div>' +
+            '</div>' +
+            '<button class="gd-join-btn ' + (isJoined ? 'joined' : '') + '" id="gd-join-btn" onclick="toggleJoinDetail(\'' + group.id + '\')">' +
+                (isJoined ? '<i class="fas fa-check"></i> أنت عضو في هذه المجموعة' : '<i class="fas fa-plus"></i> انضم إلى المجموعة') +
+            '</button>' +
+        '</div>' +
+        
+        '<div class="group-sub-tabs">' +
+            '<button class="g-sub-tab active" id="g-sub-tab-posts" onclick="switchGroupSubTab(\'posts\')">' +
+                '<i class="fas fa-comment-alt"></i> المنشورات' +
+            '</button>' +
+            '<button class="g-sub-tab" id="g-sub-tab-members" onclick="switchGroupSubTab(\'members\')">' +
+                '<i class="fas fa-users"></i> الأعضاء' +
+            '</button>' +
+        '</div>' +
+        
+        '<div class="g-tab-panel" id="g-panel-posts">' +
+            '<div id="group-post-box-container"></div>' +
+            '<div id="group-posts-feed"></div>' +
+        '</div>' +
+        
+        '<div class="g-tab-panel" id="g-panel-members" style="display:none;">' +
+            '<div class="members-section">' +
+                '<h4><i class="fas fa-users" style="color:var(--primary)"></i> الأعضاء (<span id="gd-members-title-count">' + (group.membersCount||0) + '</span>)</h4>' +
+                '<div class="members-list" id="gd-members-list-container"></div>' +
+            '</div>' +
+        '</div>';
+
+    renderGroupMembers(group);
+    renderGroupPostBox(group);
+    loadGroupPosts(group.id);
+
+    document.getElementById('groups-list-view').style.display = 'none';
+    detailEl.classList.add('open');
+    detailEl.style.display = 'block';
+}
+
+function closeGroupDetail() {
+    document.getElementById('groups-list-view').style.display = 'block';
+    var d = document.getElementById('group-detail-view');
+    d.classList.remove('open');
+    d.style.display = 'none';
+    
+    if (referrerTab === 'my-groups') {
+        switchTab('my-groups');
+    } else {
+        renderGroups(filterGroupList(), 'groups-grid');
+    }
+}
+
+function renderGroupMembers(group) {
+    var membersList = document.getElementById('gd-members-list-container');
+    if (!membersList) return;
+    
+    var membersHtml = '';
+    (group.members || []).forEach(function(m, i) {
+        membersHtml += '<div class="member-row">' +
+            '<div class="member-row-avatar" style="background:' + AVATAR_COLORS[i % AVATAR_COLORS.length] + ';">' + m + '</div>' +
+            '<div class="member-row-info">' +
+                '<div class="member-row-name">' + (MEMBER_NAMES[i] || 'عضو') + '</div>' +
+                '<div class="member-row-role">' + (i === 0 ? 'مؤسس المجموعة' : 'عضو نشط') + '</div>' +
+            '</div>' +
+            (i === 0 ? '<span class="member-badge">مؤسس</span>' : '') +
+        '</div>';
+    });
+    membersList.innerHTML = membersHtml;
+    
+    var titleCount = document.getElementById('gd-members-title-count');
+    if (titleCount) titleCount.textContent = (group.members || []).length;
+}
+
+function renderGroupPostBox(group) {
+    var container = document.getElementById('group-post-box-container');
+    if (!container) return;
+    
+    var isJoined = joinedGroups.indexOf(group.id) !== -1;
+    if (!isJoined) {
+        container.innerHTML = 
+            '<div class="join-notice">' +
+                '<i class="fas fa-lock"></i>' +
+                '<span>المحتوى مغلق! انضم إلى المجموعة لتتمكن من مشاهدة المنشورات والمشاركة فيها.</span>' +
+                '<button class="submit-btn" style="padding: 8px 20px; font-size: 0.85rem;" onclick="toggleJoinDetail(\'' + group.id + '\')">انضمام الآن</button>' +
+            '</div>';
+        return;
+    }
+    
+    container.innerHTML = 
+        '<div class="post-box" style="margin-bottom: 20px; padding: 16px;">' +
+            '<div class="post-header" style="margin-bottom: 12px;">' +
+                '<div class="user-avatar" style="width: 38px; height: 38px; font-size: 1rem;"><i class="fas fa-user"></i></div>' +
+                '<div style="font-weight:800;font-size:0.9rem;">اكتب شيئاً للمجموعة...</div>' +
+            '</div>' +
+            '<textarea class="post-input" id="group-post-textarea" placeholder="شارك أفكارك، تجاربك، أو استفساراتك مع أفراد المجموعة..." style="height: 80px; padding: 10px 12px; font-size: 0.88rem;"></textarea>' +
+            
+            '<div class="image-preview-container" id="group-image-preview-box">' +
+                '<button class="remove-img-btn" onclick="removeGroupPostImage()"><i class="fas fa-times"></i></button>' +
+                '<img src="" id="group-image-preview-img" alt="معاينة الصورة">' +
+            '</div>' +
+            
+            '<div class="post-actions" style="margin-top: 10px;">' +
+                '<label for="group-post-file-input" class="add-img-label">' +
+                    '<i class="far fa-image"></i>' +
+                    '<span>إرفاق صورة</span>' +
+                '</label>' +
+                '<input type="file" id="group-post-file-input" accept="image/*" style="display:none;" onchange="previewGroupPostImage(this)">' +
+                '<button class="submit-btn" style="padding: 8px 20px; font-size: 0.85rem;" onclick="submitGroupPost(\'' + group.id + '\')">نشر</button>' +
+            '</div>' +
+        '</div>';
+}
+
+function loadGroupPosts(groupId) {
+    var feedContainer = document.getElementById('group-posts-feed');
+    if (!feedContainer) return;
+    
+    var isJoined = joinedGroups.indexOf(groupId) !== -1;
+    if (!isJoined) {
+        feedContainer.innerHTML = '';
+        return;
+    }
+    
+    var posts = getGroupPosts(groupId);
+    
+    posts.sort(function(a, b) {
+        return new Date(b.created_at) - new Date(a.created_at);
+    });
+    
+    if (!posts.length) {
+        feedContainer.innerHTML = '<div class="empty-state"><i class="far fa-comments"></i><p>لا توجد منشورات في هذه المجموعة بعد. كن أول من ينشر!</p></div>';
+        return;
+    }
+    
+    var html = '';
+    posts.forEach(function(p, i) {
+        var isLiked = p.liked_by_me ? 'active' : '';
+        var attachedImgHtml = '';
+        if (p.image) {
+            attachedImgHtml = '<img src="' + p.image + '" class="post-attached-img" alt="منشور مجموعة" onclick="window.open(this.src)">';
+        }
+        
+        var commentsHtml = '';
+        (p.comments || []).forEach(function(c) {
+            commentsHtml += '<div class="comment-item">' +
+                '<div class="comment-avatar" style="background:' + (c.user_avatar_bg || '#6D28D9') + ';">' + (c.user_initial || 'م') + '</div>' +
+                '<div class="comment-content">' +
+                    '<div class="comment-user-header">' +
+                        '<span class="comment-user-name">' + c.user_name + '</span>' +
+                        '<span class="comment-time">' + timeAgo(c.created_at) + '</span>' +
+                    '</div>' +
+                    '<div class="comment-text">' + c.content + '</div>' +
+                '</div>' +
+            '</div>';
+        });
+        
+        html += '<div class="feed-card" style="animation-delay:' + (i * 0.05) + 's; padding: 16px; margin-bottom: 12px;">' +
+            '<div class="fc-header" style="margin-bottom: 8px;">' +
+                '<div class="fc-user">' +
+                    '<div class="fc-avatar" style="width: 36px; height: 36px; font-size: 0.95rem; background:' + (p.user_avatar_bg || '#6D28D9') + '; color:white;">' + (p.user_initial || '؟') + '</div>' +
+                    '<div class="fc-info"><h4>' + p.user_name + '</h4><span style="font-size:0.7rem;">' + timeAgo(p.created_at) + '</span></div>' +
+                '</div>' +
+            '</div>' +
+            '<div class="fc-body" style="font-size:0.9rem; line-height:1.5; margin-bottom: 8px;">' + p.content + '</div>' +
+            attachedImgHtml +
+            '<div class="fc-footer" style="padding-top: 8px; margin-top: 8px;">' +
+                '<div class="fc-action ' + isLiked + '" onclick="toggleGroupPostLike(this,\'' + groupId + '\',\'' + p.id + '\')">' +
+                    '<i class="fas fa-heart"></i> <span>' + (p.likes_count || 0) + '</span>' +
+                '</div>' +
+                '<div class="fc-action" onclick="focusCommentInput(\'' + p.id + '\')">' +
+                    '<i class="fas fa-comment"></i> <span>' + (p.comments ? p.comments.length : 0) + '</span>' +
+                '</div>' +
+            '</div>' +
+            
+            '<div class="comments-section">' +
+                '<div class="comments-list" id="comments-list-' + p.id + '">' + commentsHtml + '</div>' +
+                
+                '<div class="comment-input-container">' +
+                    '<input type="text" class="comment-input" id="comment-input-' + p.id + '" placeholder="اكتب تعليقاً..." onkeypress="handleCommentKeyPress(event, \'' + groupId + '\', \'' + p.id + '\')">' +
+                    '<button class="comment-submit-btn" onclick="submitGroupComment(\'' + groupId + '\', \'' + p.id + '\')">' +
+                        '<i class="fas fa-paper-plane" style="transform: rotate(180deg);"></i>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    });
+    
+    feedContainer.innerHTML = html;
+}
+
+function switchGroupSubTab(tabName) {
+    currentGroupSubTab = tabName;
+    document.querySelectorAll('.g-sub-tab').forEach(function(btn) {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.g-tab-panel').forEach(function(panel) {
+        panel.style.display = 'none';
+    });
+    
+    document.getElementById('g-sub-tab-' + tabName).classList.add('active');
+    document.getElementById('g-panel-' + tabName).style.display = 'block';
+}
+
+function previewGroupPostImage(input) {
+    if (input.files && input.files[0]) {
+        var file = input.files[0];
+        var previewBox = document.getElementById('group-image-preview-box');
+        var previewImg = document.getElementById('group-image-preview-img');
+        
+        compressImage(file, function(compressedBase64) {
+            groupPostImageBase64 = compressedBase64;
+            if (previewImg && previewBox) {
+                previewImg.src = compressedBase64;
+                previewBox.style.display = 'block';
+            }
+        });
+    }
+}
+
+function removeGroupPostImage() {
+    groupPostImageBase64 = '';
+    var previewBox = document.getElementById('group-image-preview-box');
+    var previewImg = document.getElementById('group-image-preview-img');
+    var fileInput = document.getElementById('group-post-file-input');
+    
+    if (previewImg) previewImg.src = '';
+    if (previewBox) previewBox.style.display = 'none';
+    if (fileInput) fileInput.value = '';
+}
+
+function submitGroupPost(groupId) {
+    var ta = document.getElementById('group-post-textarea');
+    if (!ta) return;
+    
+    var content = ta.value.trim();
+    if (!content && !groupPostImageBase64) {
+        showToast('⚠️ لا يمكن نشر منشور فارغ!');
+        return;
+    }
+    
+    var userName = 'مستخدم';
+    var initial  = 'م';
+    if (currentSession && currentSession.user && currentSession.user.email) {
+        userName = currentSession.user.email.split('@')[0];
+        initial  = userName.charAt(0).toUpperCase();
+    }
+    
+    var posts = getGroupPosts(groupId);
+    var newPost = {
+        id: 'gp_' + Date.now(),
+        groupId: groupId,
+        user_name: userName,
+        user_initial: initial,
+        user_avatar_bg: '#6D28D9',
+        content: content,
+        image: groupPostImageBase64,
+        likes_count: 0,
+        liked_by_me: false,
+        created_at: new Date().toISOString(),
+        comments: []
+    };
+    
+    posts.unshift(newPost);
+    saveGroupPosts(groupId, posts);
+    
+    ta.value = '';
+    removeGroupPostImage();
+    
+    loadGroupPosts(groupId);
+    
+    var postsStat = document.getElementById('gd-stat-posts');
+    if (postsStat) {
+        postsStat.textContent = posts.length;
+    }
+    
+    showToast('✅ تم نشر منشورك بنجاح في المجموعة!');
+}
+
+function focusCommentInput(postId) {
+    var input = document.getElementById('comment-input-' + postId);
+    if (input) input.focus();
+}
+
+function handleCommentKeyPress(event, groupId, postId) {
+    if (event.key === 'Enter') {
+        submitGroupComment(groupId, postId);
+    }
+}
+
+function submitGroupComment(groupId, postId) {
+    var input = document.getElementById('comment-input-' + postId);
+    if (!input) return;
+    
+    var text = input.value.trim();
+    if (!text) return;
+    
+    var userName = 'مستخدم';
+    var initial  = 'م';
+    if (currentSession && currentSession.user && currentSession.user.email) {
+        userName = currentSession.user.email.split('@')[0];
+        initial  = userName.charAt(0).toUpperCase();
+    }
+    
+    var posts = getGroupPosts(groupId);
+    var post = posts.filter(function(p){ return p.id === postId; })[0];
+    if (!post) return;
+    
+    if (!post.comments) post.comments = [];
+    
+    var newComment = {
+        id: 'gc_' + Date.now(),
+        user_name: userName,
+        user_initial: initial,
+        user_avatar_bg: AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)],
+        content: text,
+        created_at: new Date().toISOString()
+    };
+    
+    post.comments.push(newComment);
+    saveGroupPosts(groupId, posts);
+    
+    input.value = '';
+    
+    loadGroupPosts(groupId);
+    showToast('💬 تم إضافة تعليقك!');
+}
+
+function toggleGroupPostLike(btn, groupId, postId) {
+    var posts = getGroupPosts(groupId);
+    var post = posts.filter(function(p){ return p.id === postId; })[0];
+    if (!post) return;
+    
+    if (post.liked_by_me) {
+        post.liked_by_me = false;
+        post.likes_count = Math.max(0, (post.likes_count || 1) - 1);
+        btn.classList.remove('active');
+    } else {
+        post.liked_by_me = true;
+        post.likes_count = (post.likes_count || 0) + 1;
+        btn.classList.add('active');
+    }
+    
+    saveGroupPosts(groupId, posts);
+    
+    var span = btn.querySelector('span');
+    if (span) span.textContent = post.likes_count;
+}
+
+function toggleJoinDetail(groupId) {
+    var btn   = document.getElementById('gd-join-btn');
+    var group = allGroups.filter(function(g){ return g.id === groupId; })[0];
+    var idx   = joinedGroups.indexOf(groupId);
+    if (idx === -1) {
+        joinedGroups.push(groupId);
+        btn.className = 'gd-join-btn joined';
+        btn.innerHTML = '<i class="fas fa-check"></i> أنت عضو في هذه المجموعة';
+        if (group) {
+            group.membersCount = (group.membersCount || 0) + 1;
+            var userInitial = 'م';
+            if (currentSession && currentSession.user && currentSession.user.email) {
+                userInitial = currentSession.user.email.split('@')[0].charAt(0).toUpperCase();
+            }
+            if (!group.members) group.members = [];
+            if (group.members.indexOf(userInitial) === -1) {
+                group.members.push(userInitial);
+            }
+        }
+        showToast('✅ انضممت إلى "' + (group ? group.name : '') + '"');
+    } else {
+        joinedGroups.splice(idx, 1);
+        btn.className = 'gd-join-btn';
+        btn.innerHTML = '<i class="fas fa-plus"></i> انضم إلى المجموعة';
+        if (group) {
+            group.membersCount = Math.max(0, (group.membersCount || 1) - 1);
+            var userInitial = 'م';
+            if (currentSession && currentSession.user && currentSession.user.email) {
+                userInitial = currentSession.user.email.split('@')[0].charAt(0).toUpperCase();
+            }
+            if (group.members) {
+                var mIdx = group.members.indexOf(userInitial);
+                if (mIdx !== -1) group.members.splice(mIdx, 1);
+            }
+        }
+        showToast('👋 غادرت "' + (group ? group.name : '') + '"');
+    }
+    try { localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups)); } catch(e) {}
+    
+    if (groupId.indexOf('cg_') === 0) {
+        var saved = JSON.parse(localStorage.getItem('customGroups') || '[]');
+        var cg = saved.filter(function(g){ return g.id === groupId; })[0];
+        if (cg) {
+            cg.membersCount = group.membersCount;
+            cg.members = group.members;
+            localStorage.setItem('customGroups', JSON.stringify(saved));
+        }
+    }
+    
+    var membersStat = document.getElementById('gd-stat-members');
+    if (membersStat) membersStat.textContent = group.membersCount;
+    var membersTitleCount = document.getElementById('gd-members-title-count');
+    if (membersTitleCount) membersTitleCount.textContent = group.membersCount;
+    
+    renderGroupMembers(group);
+    renderGroupPostBox(group);
+    loadGroupPosts(groupId);
+}
+
+/* ═══════════════════════════════════
+   CREATE GROUP MODAL
+═══════════════════════════════════ */
+function buildModal() {
+    // Icon picker
+    var ip = document.getElementById('gn-icon-picker');
+    if (!ip) return;
+    ICONS.forEach(function(icon, i) {
+        var btn = document.createElement('button');
+        btn.className = 'icon-option' + (i === 0 ? ' selected' : '');
+        btn.textContent = icon;
+        btn.onclick = function() {
+            document.querySelectorAll('.icon-option').forEach(function(e){ e.classList.remove('selected'); });
+            btn.classList.add('selected');
+            selectedIcon = icon;
+        };
+        ip.appendChild(btn);
+    });
+    // Color picker
+    var cp = document.getElementById('gn-color-picker');
+    COLORS.forEach(function(grad, i) {
+        var el = document.createElement('div');
+        el.className = 'color-option' + (i === 0 ? ' selected' : '');
+        el.style.background = COLOR_DOTS[i];
+        el.onclick = function() {
+            document.querySelectorAll('.color-option').forEach(function(e){ e.classList.remove('selected'); });
+            el.classList.add('selected');
+            selectedColor = grad;
+        };
+        cp.appendChild(el);
+    });
+}
+
+function setPrivacy(p, btn) {
+    currentPrivacy = p;
+    document.querySelectorAll('#create-modal .tag-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+}
+
+function openCreateModal()  { document.getElementById('create-modal').classList.add('open'); }
+function closeCreateModal() { document.getElementById('create-modal').classList.remove('open'); }
+function handleModalClick(e) { if (e.target.id === 'create-modal') closeCreateModal(); }
+
+function createGroup() {
+    var name = (document.getElementById('gn-name').value || '').trim();
+    if (!name) { showToast('يرجى إدخال اسم المجموعة'); return; }
+    var desc = (document.getElementById('gn-desc').value || '').trim();
+    var cat  = document.getElementById('gn-cat').value;
+    var newGroup = {
+        id: 'cg_' + Date.now(), name: name, desc: desc, category: cat,
+        icon: selectedIcon, color: selectedColor, privacy: currentPrivacy,
+        members: ['أ'], membersCount: 1, postsCount: 0
+    };
+    var saved = [];
+    try { saved = JSON.parse(localStorage.getItem('customGroups') || '[]'); } catch(e) {}
+    saved.unshift(newGroup);
+    try { localStorage.setItem('customGroups', JSON.stringify(saved)); } catch(e) {}
+    allGroups.unshift(newGroup);
+    joinedGroups.push(newGroup.id);
+    try { localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups)); } catch(e) {}
+    closeCreateModal();
+    document.getElementById('gn-name').value = '';
+    document.getElementById('gn-desc').value = '';
+    showToast('🎉 تم إنشاء مجموعة "' + name + '" بنجاح!');
+    switchTab('groups');
+}
+</script>
+
+</body>
+</html>

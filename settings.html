@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function(){
+            try {
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch(e) {}
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6B2FA0">
+    <meta name="description" content="إعدادات الحساب - LodeaLode. إدارة بياناتك الشخصية، الأمان، والتفضيلات.">
+    <title>إعدادات الحساب - LodeaLode</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="settings.js" defer></script>
+
+    <style>
+        /* ─── Reset & Base ─── */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        :root {
+            --purple: #6B2FA0;
+            --purple-dark: #4E2278;
+            --purple-light: #9B6FD4;
+            --teal: #1DB8A8;
+            --teal-light: #5AD4C8;
+            --bg: #f0ebf8;
+            --surface: #ffffff;
+            --surface2: #f7f4fc;
+            --border: rgba(107,47,160,0.12);
+            --text: #1a1033;
+            --text-sub: #6b7280;
+            --danger: #ef4444;
+            --danger-bg: #fef2f2;
+            --success: #10b981;
+            --radius: 20px;
+            --radius-sm: 12px;
+            --transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+            --shadow: 0 2px 16px rgba(107,47,160,0.08);
+            --shadow-lg: 0 8px 32px rgba(107,47,160,0.14);
+        }
+
+        html.dark-mode, body.dark-mode {
+            --bg: #0f0a1e;
+            --surface: #1a1033;
+            --surface2: #231545;
+            --border: rgba(155,111,212,0.18);
+            --text: #e8e0f8;
+            --text-sub: #9ca3af;
+            --shadow: 0 2px 16px rgba(0,0,0,0.3);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            direction: rtl;
+            overflow-x: hidden;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* ─── Header ─── */
+        .s-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        body.dark-mode .s-header,
+        html.dark-mode .s-header {
+            background: rgba(26,16,51,0.9);
+        }
+
+        .s-header-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .s-header-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            object-fit: cover;
+        }
+
+        .s-header-logo span {
+            font-size: 1rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .s-header-nav {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .s-header-nav a {
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            padding: 6px 12px;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .s-header-nav a:hover, .s-header-nav a.active {
+            color: var(--purple);
+            background: rgba(107,47,160,0.08);
+        }
+
+        .s-header-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .s-header-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #fff;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .s-header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .s-header-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text);
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ─── Main layout ─── */
+        .s-main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 28px 20px 100px;
+        }
+
+        /* ─── Page title ─── */
+        .s-page-title {
+            margin-bottom: 24px;
+        }
+
+        .s-page-title h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 2px;
+        }
+
+        .s-page-title p {
+            font-size: 0.82rem;
+            color: var(--text-sub);
+        }
+
+        /* ─── Section ─── */
+        .s-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .s-section:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .s-section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .s-section-header:hover {
+            background: var(--surface2);
+        }
+
+        .s-section-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(107,47,160,0.12), rgba(29,184,168,0.08));
+            color: var(--purple);
+        }
+
+        .s-section-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .s-section-title {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 1px;
+        }
+
+        .s-section-desc {
+            font-size: 0.74rem;
+            color: var(--text-sub);
+        }
+
+        .s-section-chevron {
+            color: var(--text-sub);
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .s-section.expanded .s-section-chevron {
+            transform: rotate(180deg);
+        }
+
+        .s-section-body {
+            padding: 20px;
+            display: none;
+            animation: fadeSlide 0.25s ease;
+        }
+
+        .s-section.expanded .s-section-body {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── Form elements ─── */
+        .s-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .s-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .s-form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .s-form-group label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .s-input {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 11px 14px;
+            font-size: 0.87rem;
+            font-family: 'Cairo', sans-serif;
+            color: var(--text);
+            outline: none;
+            transition: var(--transition);
+            width: 100%;
+        }
+
+        .s-input:focus {
+            border-color: var(--purple);
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(107,47,160,0.1);
+        }
+
+        .s-input:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .s-input-wrap {
+            position: relative;
+        }
+
+        .s-input-wrap .s-input {
+            padding-left: 40px;
+        }
+
+        .s-input-wrap .eye-btn {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            cursor: pointer;
+            font-size: 0.85rem;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+
+        .s-input-wrap .eye-btn:hover {
+            color: var(--purple);
+        }
+
+        /* ─── Avatar row ─── */
+        .s-avatar-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+            padding: 14px;
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .s-avatar-img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--purple);
+            flex-shrink: 0;
+        }
+
+        .s-avatar-info h3 {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .s-avatar-info p {
+            font-size: 0.74rem;
+            color: var(--text-sub);
+        }
+
+        /* ─── Buttons ─── */
+        .s-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            padding: 11px 22px;
+            transition: var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .s-btn-primary {
+            background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(107,47,160,0.28);
+        }
+
+        .s-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107,47,160,0.38);
+        }
+
+        .s-btn-primary:active { transform: translateY(0); }
+
+        .s-btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .s-btn-outline {
+            background: transparent;
+            color: var(--purple);
+            border: 1.5px solid var(--border);
+        }
+
+        .s-btn-outline:hover {
+            background: rgba(107,47,160,0.06);
+            border-color: var(--purple);
+        }
+
+        .s-btn-danger {
+            background: var(--danger-bg);
+            color: var(--danger);
+            border: 1.5px solid rgba(239,68,68,0.2);
+        }
+
+        .s-btn-danger:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .s-btn-sm {
+            padding: 7px 14px;
+            font-size: 0.78rem;
+        }
+
+        .s-btn-full {
+            width: 100%;
+        }
+
+        /* ─── Toggle rows ─── */
+        .s-toggle-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .s-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .s-toggle-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .s-toggle-row:first-child {
+            padding-top: 0;
+        }
+
+        .s-toggle-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .s-toggle-info h4 {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1px;
+        }
+
+        .s-toggle-info p {
+            font-size: 0.73rem;
+            color: var(--text-sub);
+        }
+
+        /* ─── Custom Toggle Switch ─── */
+        .s-toggle {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .s-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .s-toggle-track {
+            position: absolute;
+            inset: 0;
+            background: #d1d5db;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        body.dark-mode .s-toggle-track {
+            background: #374151;
+        }
+
+        .s-toggle-track::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        .s-toggle input:checked + .s-toggle-track {
+            background: linear-gradient(135deg, var(--purple), var(--teal));
+        }
+
+        .s-toggle input:checked + .s-toggle-track::after {
+            transform: translateX(-20px);
+        }
+
+        /* ─── Select ─── */
+        .s-select {
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 9px 14px;
+            font-size: 0.84rem;
+            font-family: 'Cairo', sans-serif;
+            color: var(--text);
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .s-select:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px rgba(107,47,160,0.1);
+        }
+
+        /* ─── Payment & Address cards ─── */
+        .s-card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .s-mini-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .s-mini-card:hover {
+            border-color: var(--purple);
+            background: rgba(107,47,160,0.04);
+        }
+
+        .s-mini-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, rgba(107,47,160,0.1), rgba(29,184,168,0.08));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--purple);
+            flex-shrink: 0;
+        }
+
+        .s-mini-card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .s-mini-card-info h4 {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .s-mini-card-info p {
+            font-size: 0.73rem;
+            color: var(--text-sub);
+        }
+
+        .s-badge {
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, rgba(107,47,160,0.12), rgba(29,184,168,0.08));
+            color: var(--purple);
+            white-space: nowrap;
+        }
+
+        /* ─── Danger zone ─── */
+        .s-danger-section {
+            border-color: rgba(239,68,68,0.2);
+        }
+
+        .s-danger-section .s-section-icon {
+            background: rgba(239,68,68,0.08);
+            color: var(--danger);
+        }
+
+        .s-danger-section .s-section-title {
+            color: var(--danger);
+        }
+
+        .s-danger-box {
+            background: var(--danger-bg);
+            border: 1px solid rgba(239,68,68,0.15);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        body.dark-mode .s-danger-box {
+            background: rgba(239,68,68,0.05);
+            border-color: rgba(239,68,68,0.2);
+        }
+
+        .s-danger-box p {
+            font-size: 0.8rem;
+            color: #991b1b;
+            line-height: 1.6;
+        }
+
+        body.dark-mode .s-danger-box p {
+            color: #fca5a5;
+        }
+
+        /* ─── Toast ─── */
+        .s-toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--text);
+            color: var(--surface);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 0.83rem;
+            font-weight: 700;
+            white-space: nowrap;
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .s-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .s-toast.success { background: #065f46; color: #fff; }
+        .s-toast.error   { background: #991b1b; color: #fff; }
+
+        /* ─── Mobile bottom nav ─── */
+        .s-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 10px;
+            left: 12px;
+            right: 12px;
+            z-index: 200;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 8px 10px;
+            box-shadow: 0 8px 32px rgba(107,47,160,0.18);
+        }
+
+        body.dark-mode .s-bottom-nav {
+            background: rgba(26,16,51,0.94);
+        }
+
+        .s-bottom-nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .s-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            text-decoration: none;
+            color: var(--text-sub);
+            padding: 8px 16px;
+            border-radius: 14px;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .s-nav-item i {
+            font-size: 1.2rem;
+        }
+
+        .s-nav-item span {
+            font-size: 0.58rem;
+            font-weight: 800;
+        }
+
+        .s-nav-item.active {
+            color: var(--purple);
+            background: rgba(107,47,160,0.1);
+        }
+
+        body.dark-mode .s-nav-item.active {
+            color: var(--purple-light);
+            background: rgba(155,111,212,0.15);
+        }
+
+        .s-nav-item:active {
+            transform: scale(0.94);
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 768px) {
+            .s-header {
+                height: 54px;
+                padding: 0 16px;
+            }
+
+            .s-header-nav {
+                display: none;
+            }
+
+            .s-header-logo span {
+                font-size: 0.92rem;
+            }
+
+            .s-main {
+                padding: 20px 14px 100px;
+            }
+
+            .s-page-title h1 {
+                font-size: 1.25rem;
+            }
+
+            .s-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .s-section-body {
+                padding: 16px;
+            }
+
+            .s-section-header {
+                padding: 14px 16px;
+            }
+
+            .s-bottom-nav {
+                display: block;
+            }
+
+            .s-toast {
+                bottom: 82px;
+                font-size: 0.78rem;
+                max-width: calc(100vw - 40px);
+                white-space: normal;
+                text-align: center;
+                border-radius: 14px;
+                padding: 10px 16px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            /* All sections expanded by default on desktop */
+            .s-section-body { display: block; }
+            .s-section-chevron { display: none; }
+            .s-section-header { cursor: default; }
+            .s-section-header:hover { background: transparent; }
+        }
+
+        /* ─── Spinner ─── */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .fa-spin { animation: spin 0.8s linear infinite; }
+
+        /* ─── Separator ─── */
+        .s-sep {
+            height: 1px;
+            background: var(--border);
+            margin: 14px 0;
+        }
+
+        /* ─── Helper ─── */
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .mt-8 { margin-top: 8px; }
+        .mt-12 { margin-top: 12px; }
+
+        /* Unified active navigation circle for settings.html bottom nav */
+        .s-nav-item {
+            position: relative;
+            overflow: visible;
+        }
+        .s-nav-item.active .home-nav-circle {
+            background: var(--purple);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(107, 47, 160, 0.4);
+            margin-top: -18px;
+            transition: transform 0.2s;
+        }
+        .s-nav-item.active .home-nav-circle i {
+            color: #fff !important;
+        }
+        .s-nav-item .home-nav-circle i {
+            color: #fff !important;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+
+    <!-- ─── Header ─── -->
+    <header class="s-header">
+        <a href="index.html" class="s-header-logo">
+            <img src="logo.png" alt="LodeaLode">
+            <span>LodeaLode</span>
+        </a>
+
+        <nav class="s-header-nav">
+            <a href="index.html"><i class="fas fa-home fa-xs"></i> الرئيسية</a>
+            <a href="products.html"><i class="fas fa-users fa-xs"></i> الغرف</a>
+            <a href="community.html"><i class="fas fa-comments fa-xs"></i> المجتمع</a>
+            <a href="settings.html" class="active"><i class="fas fa-cog fa-xs"></i> إعدادات</a>
+        </nav>
+
+        <div class="s-header-user">
+            <div class="s-header-avatar" id="hdr-avatar">م</div>
+            <span class="s-header-name" id="hdr-name">مستخدم</span>
+        </div>
+    </header>
+
+    <!-- ─── Main ─── -->
+    <main class="s-main">
+
+        <div class="s-page-title">
+            <h1>إعدادات الحساب</h1>
+            <p>إدارة بياناتك الشخصية، الأمان، والتفضيلات</p>
+        </div>
+
+        <!-- 1 · Personal Info -->
+        <div class="s-section" id="sec-personal">
+            <div class="s-section-header" onclick="toggleSection('sec-personal')">
+                <div class="s-section-icon"><i class="fas fa-user"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">المعلومات الشخصية</div>
+                    <div class="s-section-desc">الاسم، البريد الإلكتروني، رقم الجوال</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <!-- Avatar row -->
+                <div class="s-avatar-row">
+                    <img id="settings-avatar-img"
+                         src="https://ui-avatars.com/api/?name=User&background=6D28D9&color=fff&size=96&bold=true"
+                         alt="الصورة الشخصية" class="s-avatar-img">
+                    <div class="s-avatar-info">
+                        <h3 id="avatar-display-name">مستخدم</h3>
+                        <p id="avatar-display-email">—</p>
+                    </div>
+                </div>
+
+                <form id="personal-info-form">
+                    <div class="s-form-grid">
+                        <div class="s-form-group">
+                            <label for="full_name">الاسم الكامل</label>
+                            <input class="s-input" type="text" id="full_name" placeholder="أحمد محمد">
+                        </div>
+                        <div class="s-form-group">
+                            <label for="phone">رقم الجوال</label>
+                            <input class="s-input" type="tel" id="phone" placeholder="+213 55 123 4567" dir="ltr">
+                        </div>
+                        <div class="s-form-group full-width">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input class="s-input" type="email" id="email" disabled placeholder="user@example.com">
+                        </div>
+                    </div>
+                    <button type="submit" class="s-btn s-btn-primary" id="save-personal-btn">
+                        <i class="fas fa-save"></i> حفظ التغييرات
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2 · Security -->
+        <div class="s-section" id="sec-security">
+            <div class="s-section-header" onclick="toggleSection('sec-security')">
+                <div class="s-section-icon"><i class="fas fa-lock"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">الأمان وكلمة المرور</div>
+                    <div class="s-section-desc">تغيير كلمة المرور وإعدادات الأمان</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <form id="password-form">
+                    <div class="s-form-grid">
+                        <div class="s-form-group">
+                            <label for="new_password">كلمة المرور الجديدة</label>
+                            <div class="s-input-wrap">
+                                <input class="s-input" type="password" id="new_password" placeholder="••••••••">
+                                <button type="button" class="eye-btn toggle-password" aria-label="إظهار/إخفاء">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="s-form-group">
+                            <label for="confirm_password">تأكيد كلمة المرور</label>
+                            <div class="s-input-wrap">
+                                <input class="s-input" type="password" id="confirm_password" placeholder="••••••••">
+                                <button type="button" class="eye-btn toggle-password" aria-label="إظهار/إخفاء">
+                                    <i class="far fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="s-btn s-btn-primary" id="update-password-btn">
+                        <i class="fas fa-key"></i> تحديث كلمة المرور
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3 · Notifications -->
+        <div class="s-section" id="sec-notif">
+            <div class="s-section-header" onclick="toggleSection('sec-notif')">
+                <div class="s-section-icon"><i class="fas fa-bell"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">الإشعارات</div>
+                    <div class="s-section-desc">إدارة تفضيلات الإشعارات</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <div class="s-toggle-list">
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>الإشعارات البريدية والتسويقية</h4>
+                            <p>تلقي العروض والتحديثات عبر البريد</p>
+                        </div>
+                        <label class="s-toggle">
+                            <input type="checkbox" id="notif_marketing" checked>
+                            <span class="s-toggle-track"></span>
+                        </label>
+                    </div>
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>إشعارات الطلبات</h4>
+                            <p>تحديثات الطلبات والشحن</p>
+                        </div>
+                        <label class="s-toggle">
+                            <input type="checkbox" id="notif_orders" checked>
+                            <span class="s-toggle-track"></span>
+                        </label>
+                    </div>
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>العروض الحصرية</h4>
+                            <p>إشعارات العروض والخصومات</p>
+                        </div>
+                        <label class="s-toggle">
+                            <input type="checkbox" id="notif_offers" checked>
+                            <span class="s-toggle-track"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 · Privacy -->
+        <div class="s-section" id="sec-privacy">
+            <div class="s-section-header" onclick="toggleSection('sec-privacy')">
+                <div class="s-section-icon"><i class="fas fa-shield-alt"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">الخصوصية</div>
+                    <div class="s-section-desc">من يمكنه رؤية ملفك الشخصي ومراسلتك</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <div class="s-toggle-list">
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>من يمكنه رؤية ملفي الشخصي؟</h4>
+                        </div>
+                        <select class="s-select" id="privacy_profile">
+                            <option value="all">الجميع</option>
+                            <option value="members">الأعضاء فقط</option>
+                            <option value="none">لا أحد</option>
+                        </select>
+                    </div>
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>من يمكنه مراسلتي؟</h4>
+                        </div>
+                        <select class="s-select" id="privacy_messages">
+                            <option value="all">الجميع</option>
+                            <option value="none">لا أحد</option>
+                        </select>
+                    </div>
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>إظهار نشاطي مؤخراً</h4>
+                            <p>يرى الآخرون متى كنت نشطاً آخر مرة</p>
+                        </div>
+                        <label class="s-toggle">
+                            <input type="checkbox" id="privacy_activity" checked>
+                            <span class="s-toggle-track"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 · App Settings -->
+        <div class="s-section" id="sec-app">
+            <div class="s-section-header" onclick="toggleSection('sec-app')">
+                <div class="s-section-icon"><i class="fas fa-sliders-h"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">إعدادات التطبيق</div>
+                    <div class="s-section-desc">الوضع الليلي وتفضيلات التصفح</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <div class="s-toggle-list">
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>الوضع الليلي</h4>
+                            <p>تفعيل المظهر الداكن المريح للعين</p>
+                        </div>
+                        <label class="s-toggle">
+                            <input type="checkbox" id="app_dark_mode">
+                            <span class="s-toggle-track"></span>
+                        </label>
+                    </div>
+                    <div class="s-toggle-row">
+                        <div class="s-toggle-info">
+                            <h4>توفير استهلاك البيانات</h4>
+                            <p>تقليل جودة الصور لتسريع التصفح</p>
+                        </div>
+                        <label class="s-toggle">
+                            <input type="checkbox" id="app_data_saver">
+                            <span class="s-toggle-track"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6 · Payment -->
+        <div class="s-section" id="sec-payment">
+            <div class="s-section-header" onclick="toggleSection('sec-payment')">
+                <div class="s-section-icon"><i class="fas fa-credit-card"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">وسائل الدفع</div>
+                    <div class="s-section-desc">إدارة طرق الدفع المحفوظة</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <div class="s-card-list" id="payment-methods-list">
+                    <div class="s-mini-card">
+                        <div class="s-mini-card-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="s-mini-card-info">
+                            <h4>**** **** **** 4242</h4>
+                            <p>Mastercard · تنتهي 12/26</p>
+                        </div>
+                        <span class="s-badge">افتراضي</span>
+                    </div>
+                </div>
+                <button class="s-btn s-btn-outline s-btn-sm" id="add-payment-btn">
+                    <i class="fas fa-plus"></i> إضافة وسيلة دفع
+                </button>
+            </div>
+        </div>
+
+        <!-- 7 · Addresses -->
+        <div class="s-section" id="sec-address">
+            <div class="s-section-header" onclick="toggleSection('sec-address')">
+                <div class="s-section-icon"><i class="fas fa-map-marker-alt"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">عناوين الشحن</div>
+                    <div class="s-section-desc">إدارة عناوين الشحن والتوصيل</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <div class="s-card-list" id="addresses-list">
+                    <div class="s-mini-card">
+                        <div class="s-mini-card-icon"><i class="fas fa-home"></i></div>
+                        <div class="s-mini-card-info">
+                            <h4>المنزل</h4>
+                            <p>الجزائر العاصمة، باب الزوار، شارع 1، مبنى 5</p>
+                        </div>
+                        <span class="s-badge">افتراضي</span>
+                    </div>
+                </div>
+                <button class="s-btn s-btn-outline s-btn-sm" id="add-address-btn">
+                    <i class="fas fa-plus"></i> إضافة عنوان
+                </button>
+            </div>
+        </div>
+
+        <!-- 8 · Danger zone -->
+        <div class="s-section s-danger-section" id="sec-danger">
+            <div class="s-section-header" onclick="toggleSection('sec-danger')">
+                <div class="s-section-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="s-section-info">
+                    <div class="s-section-title">حذف الحساب</div>
+                    <div class="s-section-desc">إجراء لا يمكن التراجع عنه</div>
+                </div>
+                <i class="fas fa-chevron-down s-section-chevron"></i>
+            </div>
+            <div class="s-section-body">
+                <div class="s-danger-box">
+                    <p>⚠️ سيتم حذف حسابك وجميع بياناتك بشكل نهائي. لا يمكن استعادة أي معلومات بعد تنفيذ هذا الإجراء.</p>
+                </div>
+                <button class="s-btn s-btn-danger" id="delete-account-btn">
+                    <i class="fas fa-trash-alt"></i> حذف الحساب نهائياً
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <a href="index.html" class="nav-item" id="nav-home">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-label">الرئيسية</span>
+        </a>
+        <a href="rooms.html" class="nav-item" id="nav-rooms">
+            <i class="fas fa-shopping-cart nav-icon"></i>
+            <span class="nav-label">غرفي</span>
+        </a>
+        <a href="community.html" class="nav-item" id="nav-community">
+            <i class="fas fa-comments nav-icon"></i>
+            <span class="nav-label">المجتمع</span>
+        </a>
+        <a href="products.html" class="nav-item" id="nav-products">
+            <i class="fas fa-shopping-bag nav-icon"></i>
+            <span class="nav-label">المنتجات</span>
+        </a>
+        <a href="settings.html" class="nav-item active" id="nav-settings">
+            <i class="far fa-user nav-icon"></i>
+            <span class="nav-label">حسابي</span>
+        </a>
+    </nav>
+
+    <!-- ─── Toast ─── -->
+    <div class="s-toast" id="settings-toast"></div>
+
+    <script>
+        // ─── Accordion (mobile only) ───
+        function toggleSection(id) {
+            if (window.innerWidth >= 769) return;
+            const sec = document.getElementById(id);
+            if (!sec) return;
+            sec.classList.toggle('expanded');
+        }
+
+        // ─── Password visibility ───
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.closest('.s-input-wrap').querySelector('input');
+                const icon  = btn.querySelector('i');
+                if (!input) return;
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                icon.className = show ? 'far fa-eye-slash' : 'far fa-eye';
+            });
+        });
+    </script>
+</body>
+</html>

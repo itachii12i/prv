@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lodealode - صفقات الشراء الجماعي المذهلة لكل الجزائريين</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Three.js for 3D background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="blob blob-3"></div>
+
+    <!-- Full Page 3D Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <div class="container">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <span class="deal">Lodea</span><span class="lode">lode</span>
+            </a>
+            <div id="auth-controls" class="auth-controls">
+                <button id="login-btn" class="nav-btn">الدخول / حساب جديد</button>
+                <div id="user-info" class="user-info hidden">
+                    <a href="super-admin.html" id="super-admin-panel-btn" class="nav-btn hidden" style="border-color: #EF4444; color: #EF4444; text-decoration: none;">إدارة الشركة</a>
+                    <a href="admin.html" id="admin-panel-btn" class="nav-btn hidden" style="border-color: var(--accent-gold); color: var(--accent-gold); text-decoration: none;">لوحة التحكم</a>
+                    <button id="my-orders-btn" class="nav-btn" style="border-color: var(--accent-blue); color: var(--accent-blue);">طلباتي</button>
+                    <span id="user-email" class="user-email"></span>
+                    <button id="logout-btn" class="nav-btn logout">خروج</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Full Screen Landing Hero -->
+        <header class="hero" id="hero-section">
+            <div class="hero-content reveal">
+                <div class="logo-large float-anim" style="font-size: 4rem; margin-bottom: 2rem;">
+                    <span class="deal" style="color: #ffffff;">LoDeal</span><span class="lode" style="background: linear-gradient(to right, var(--accent-gold), #FCD34D); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Lode</span>
+                </div>
+                <h1 style="font-size: clamp(2.5rem, 8vw, 5rem);">قوة الشراء الجماعي.. <br><span class="highlight">أسعار الجملة للجميع</span></h1>
+                <p style="font-size: 1.5rem; color: #b0b0b0; max-width: 800px; margin: 2rem auto;">نجمع طلبات الجزائريين لنفاوض المصانع والموردين مباشرة. <br> عندما نتحد كمشترين، نحصل على أقل سعر ممكن في السوق.</p>
+                
+                <div class="hero-actions">
+                    <button class="cta-btn btn-solid" onclick="scrollToProducts()">اكتشف الصفقات اليوم</button>
+                    <button class="cta-btn btn-ghost" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">كيف نوفر لك المال؟</button>
+                </div>
+
+                <div class="scroll-indicator float-anim" style="margin-top: 4rem; cursor: pointer;" onclick="scrollToProducts()">
+                    <span style="display: block; font-size: 0.9rem; color: #b0b0b0; margin-bottom: 10px;">اكتشف المزيد</span>
+                    <div style="width: 30px; height: 50px; border: 2px solid rgba(255,255,255,0.2); border-radius: 15px; margin: 0 auto; position: relative;">
+                        <div style="width: 6px; height: 10px; background: #ffffff; border-radius: 3px; position: absolute; left: 50%; top: 10px; transform: translateX(-50%); animation: scrollMouse 2s infinite;"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Trust Features -->
+        <section class="trust-features reveal">
+            <div class="feature-item">
+                <span class="feature-icon">🛡️</span>
+                <h4>ضمان واطمئنان</h4>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">📞</span>
+                <h4>تأكيد هاتفي</h4>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🚚</span>
+                <h4>توصيل وطني</h4>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💎</span>
+                <h4>جودة أصلية</h4>
+            </div>
+        </section>
+
+        <!-- How it works -->
+        <section class="how-it-works-professional reveal" id="how-it-works">
+            <h2 class="section-title">رحلة التوفير مع LodeaLode</h2>
+            <div class="steps-container">
+                <div class="step-card-pro">
+                    <div class="step-icon">🛒</div>
+                    <div class="step-content">
+                        <h3>1. اختر وانضم</h3>
+                        <p>تصفح المنتجات المختارة بعناية. عندما تجد ما يعجبك، اضغط "انضم" لتصبح جزءاً من المجموعة.</p>
+                    </div>
+                </div>
+                <div class="step-arrow">←</div>
+                <div class="step-card-pro">
+                    <div class="step-icon">👥</div>
+                    <div class="step-content">
+                        <h3>2. اكتمل العدد</h3>
+                        <p>بمجرد وصول عدد المشترين للحد المطلوب، يتم تفعيل "سعر الجملة" المذهل للجميع تلقائياً.</p>
+                    </div>
+                </div>
+                <div class="step-arrow">←</div>
+                <div class="step-card-pro">
+                    <div class="step-icon">🚚</div>
+                    <div class="step-content">
+                        <h3>3. توصيل لباب البيت</h3>
+                        <p>نشحن المنتج إليك أينما كنت في الجزائر، وتدفع عند الاستلام بضمان كامل وجودة أصلية.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Group Buying Section -->
+        <section class="concept-section reveal">
+            <div class="concept-grid">
+                <div class="concept-text">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--accent-gold);">لماذا أسعارنا أقل من السوق؟</h2>
+                    <p style="font-size: 1.1rem; line-height: 1.8; color: #d1d5db; margin-bottom: 1.5rem;">
+                        في التجارة العادية، يمر المنتج عبر عدة وسطاء، وكل واحد يضيف ربحه الخاص. في <strong>LodeaLode</strong>، نحن نلغي هؤلاء الوسطاء.
+                    </p>
+                    <div class="benefit-item">
+                        <span class="benefit-check">✓</span>
+                        <div>
+                            <strong>مفاوضة مباشرة:</strong> نتحدث مع المصنع مباشرة كأننا نشتري 1000 قطعة دفعة واحدة.
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-check">✓</span>
+                        <div>
+                            <strong>لا مخازن مكلفة:</strong> نشحن من المورد للمستهلك، مما يقلل تكاليف التخزين.
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-check">✓</span>
+                        <div>
+                            <strong>ربح بسيط، مبيعات كثيرة:</strong> نكتفي بهامش ربح صغير جداً لأننا نعتمد على كثرة الطلبات.
+                        </div>
+                    </div>
+                </div>
+                <div class="concept-visual">
+                    <div class="power-circle">
+                        <div class="circle-text">القوة في<br>الجماعة</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission-section reveal">
+            <div class="mission-card">
+                <h3>مهمتنا في الجزائر 🇩🇿</h3>
+                <p>نحن لسنا مجرد متجر إلكتروني، نحن حركة اقتصادية تهدف لتخفيف العبء المادي عن العائلات الجزائرية. نؤمن أن الجودة العالية يجب أن تكون متاحة للجميع بأسعار عادلة، وهذا ما نحققه معاً كل يوم.</p>
+            </div>
+        </section>
+
+        <!-- Products -->
+        <section class="products-section reveal">
+            <h2 class="section-title">الصفقات الحية الآن</h2>
+
+            <!-- Categories Filter -->
+            <div class="categories-tabs">
+                <button class="cat-tab active" data-category="all">الكل</button>
+                <button class="cat-tab" data-category="تكنولوجيا">تكنولوجيا</button>
+                <button class="cat-tab" data-category="منزل">المنزل</button>
+                <button class="cat-tab" data-category="جمال">جمال</button>
+                <button class="cat-tab" data-category="رياضة">رياضة</button>
+            </div>
+
+            <div id="loading" class="loading-spinner">
+                <div class="spinner"></div>
+                <p>جاري تحميل أحدث الصفقات...</p>
+            </div>
+
+            <div id="error-message" class="error-message hidden" style="color: #F87171; text-align: center; margin: 2rem;">
+            </div>
+
+            <!-- Cinematic Split-Screen Showcase (Expands here) -->
+            <div id="product-showcase" class="showcase-wrapper">
+                <div class="showcase-close" onclick="closeShowcase()">&times;</div>
+                <div id="showcase-content-target" class="showcase-content"></div>
+            </div>
+
+            <div id="products-grid" class="products-grid hidden">
+                <!-- Products will be injected here by JavaScript -->
+            </div>
+
+            <div id="empty-state" class="empty-state hidden" style="text-align: center; color: #94A3B8; padding: 3rem;">
+                <p>لا توجد صفقات مفعلة حالياً. تابعنا قريباً!</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal-btn">&times;</span>
+            <h2 id="auth-title" class="section-title" style="margin-bottom: 1.5rem; font-size: 1.8rem;">تسجيل الدخول</h2>
+            <form id="auth-form" class="auth-form">
+                <div class="input-group">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="example@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" placeholder="******" required minlength="6">
+                </div>
+                
+                <button type="submit" class="action-btn auth-submit" id="auth-submit-btn">
+                    <span class="btn-text">تسجيل الدخول</span>
+                    <div class="btn-spinner hidden"></div>
+                </button>
+                
+                <div id="auth-error" class="error-message hidden" style="color: #F87171; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+                <div id="auth-success" class="success-message hidden" style="color: #10B981; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+
+                <p class="auth-switch-text" style="text-align: center; margin-top: 1.5rem; color: #94A3B8;">
+                    <span id="auth-switch-msg">ليس لديك حساب؟</span> 
+                    <a href="#" id="auth-switch-link" style="color: var(--accent-blue); text-decoration: none; font-weight: bold;">أنشئ حساباً الآن</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Details Modal -->
+    <div id="product-details-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px; padding: 2rem;">
+            <span class="close-modal" id="close-product-details-btn">&times;</span>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div id="pd-image" style="width: 100%; height: 300px; background-size: contain; background-position: center; background-repeat: no-repeat; border-radius: 16px; background-color: #f8fafc;"></div>
+                
+                <div style="text-align: center;">
+                    <h2 id="pd-title" style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">اسم المنتج</h2>
+                    <div class="price-frame" style="margin-bottom: 1rem;">
+                        <span id="pd-price" style="font-size: 1.8rem; font-weight: 800; color: #15803d;">0 د.ج</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.05); padding: 1.5rem; border-radius: 16px;">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">مواصفات وتفاصيل المنتج</h3>
+                    <p id="pd-specs" style="color: var(--text-muted); line-height: 1.8; font-size: 0.95rem; white-space: pre-line;"></p>
+                </div>
+
+                <button class="action-btn" id="pd-join-btn" style="background: linear-gradient(135deg, #f97316, #fb923c); font-size: 1.2rem; padding: 1.2rem;">
+                    الانضمام للمجموعة والشراء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" id="close-checkout-btn">&times;</span>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.8rem; border: none; color: #fff;">إتمام الانضمام للطلب</h2>
+                <p style="color: #94A3B8; font-size: 0.9rem; margin-bottom: 1rem;">أنت على وشك الانضمام لصفقة:</p>
+                <div style="background: rgba(245, 158, 11, 0.05); padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.1);">
+                    <span id="display-product-name" style="color: var(--accent-gold); font-weight: 800; font-size: 1.2rem;">...</span>
+                </div>
+            </div>
+
+            
+            <form id="checkout-form" class="auth-form">
+                <input type="hidden" id="checkout-product-id">
+                <input type="hidden" id="checkout-product-name">
+
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="first-name">الاسم</label>
+                        <input type="text" id="first-name" required placeholder="الاسم الأول">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="last-name">اللقب</label>
+                        <input type="text" id="last-name" required placeholder="اسم العائلة">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="phone-number">رقم الهاتف</label>
+                    <input type="tel" id="phone-number" required placeholder="05XX XX XX XX" dir="ltr" style="text-align: right;">
+                </div>
+
+                <div class="input-group">
+                    <label for="wilaya">الولاية (مهم لتنسيق التوصيل)</label>
+                    <select id="wilaya" required style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-main); padding: 0.75rem 1rem; border-radius: 10px; font-size: 1rem; outline: none; transition: border-color 0.3s ease; width: 100%;">
+                        <option value="" disabled selected>اختر الولاية...</option>
+                        <option value="أدرار">🇩🇿 1. أدرار</option>
+                        <option value="الشلف">🇩🇿 2. الشلف</option>
+                        <option value="الأغواط">🇩🇿 3. الأغواط</option>
+                        <option value="أم البواقي">🇩🇿 4. أم البواقي</option>
+                        <option value="باتنة">🇩🇿 5. باتنة</option>
+                        <option value="بجاية">🇩🇿 6. بجاية</option>
+                        <option value="بسكرة">🇩🇿 7. بسكرة</option>
+                        <option value="بشار">🇩🇿 8. بشار</option>
+                        <option value="البليدة">🇩🇿 9. البليدة</option>
+                        <option value="البويرة">🇩🇿 10. البويرة</option>
+                        <option value="تمنراست">🇩🇿 11. تمنراست</option>
+                        <option value="تبسة">🇩🇿 12. تبسة</option>
+                        <option value="تلمسان">🇩🇿 13. تلمسان</option>
+                        <option value="تيارت">🇩🇿 14. تيارت</option>
+                        <option value="تيزي وزو">🇩🇿 15. تيزي وزو</option>
+                        <option value="الجزائر العاصمة">🇩🇿 16. الجزائر العاصمة</option>
+                        <option value="الجلفة">🇩🇿 17. الجلفة</option>
+                        <option value="جيجل">🇩🇿 18. جيجل</option>
+                        <option value="سطيف">🇩🇿 19. سطيف</option>
+                        <option value="سعيدة">🇩🇿 20. سعيدة</option>
+                        <option value="سكيكدة">🇩🇿 21. سكيكدة</option>
+                        <option value="سيدي بلعباس">🇩🇿 22. سيدي بلعباس</option>
+                        <option value="عنابة">🇩🇿 23. عنابة</option>
+                        <option value="قالمة">🇩🇿 24. قالمة</option>
+                        <option value="قسنطينة">🇩🇿 25. قسنطينة</option>
+                        <option value="المدية">🇩🇿 26. المدية</option>
+                        <option value="مستغانم">🇩🇿 27. مستغانم</option>
+                        <option value="المسيلة">🇩🇿 28. المسيلة</option>
+                        <option value="معسكر">🇩🇿 29. معسكر</option>
+                        <option value="ورقلة">🇩🇿 30. ورقلة</option>
+                        <option value="وهران">🇩🇿 31. وهران</option>
+                        <option value="البيض">🇩🇿 32. البيض</option>
+                        <option value="إليزي">🇩🇿 33. إليزي</option>
+                        <option value="برج بوعريريج">🇩🇿 34. برج بوعريريج</option>
+                        <option value="بومرداس">🇩🇿 35. بومرداس</option>
+                        <option value="الطارف">🇩🇿 36. الطارف</option>
+                        <option value="تندوف">🇩🇿 37. تندوف</option>
+                        <option value="تيسمسيلت">🇩🇿 38. تيسمسيلت</option>
+                        <option value="الوادي">🇩🇿 39. الوادي</option>
+                        <option value="خنشلة">🇩🇿 40. خنشلة</option>
+                        <option value="سوق أهراس">🇩🇿 41. سوق أهراس</option>
+                        <option value="تيبازة">🇩🇿 42. تيبازة</option>
+                        <option value="ميلة">🇩🇿 43. ميلة</option>
+                        <option value="عين الدفلى">🇩🇿 44. عين الدفلى</option>
+                        <option value="النعامة">🇩🇿 45. النعامة</option>
+                        <option value="عين تموشنت">🇩🇿 46. عين تموشنت</option>
+                        <option value="غرداية">🇩🇿 47. غرداية</option>
+                        <option value="غليزان">🇩🇿 48. غليزان</option>
+                        <option value="المغير">🇩🇿 49. المغير</option>
+                        <option value="المنيعة">🇩🇿 50. المنيعة</option>
+                        <option value="أولاد جلال">🇩🇿 51. أولاد جلال</option>
+                        <option value="برج باجي مختار">🇩🇿 52. برج باجي مختار</option>
+                        <option value="بني عباس">🇩🇿 53. بني عباس</option>
+                        <option value="تيميمون">🇩🇿 54. تيميمون</option>
+                        <option value="تقرت">🇩🇿 55. تقرت</option>
+                        <option value="جانت">🇩🇿 56. جانت</option>
+                        <option value="إن صالح">🇩🇿 57. إن صالح</option>
+                        <option value="إن قزام">🇩🇿 58. إن قزام</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="action-btn auth-submit" id="checkout-submit-btn" style="background: var(--success); color: white; margin-top: 1.5rem;">
+                    <span class="btn-text">تأكيد الانضمام للصفقة</span>
+                    <div class="btn-spinner hidden"></div>
+                </button>
+                
+                <div id="checkout-error" class="error-message hidden" style="color: #F87171; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+                <div id="checkout-success" class="success-message hidden" style="color: #10B981; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div id="orders-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px; width: 95%;">
+            <span class="close-modal" id="close-orders-btn">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 2rem; font-size: 1.8rem; border: none; text-align: center;">قائمة طلباتي</h2>
+            
+            <div id="orders-loading" class="hidden" style="text-align: center; padding: 2rem;">
+                <div class="spinner" style="width: 30px; height: 30px;"></div>
+                <p>جاري تحميل طلباتك...</p>
+            </div>
+
+            <div id="orders-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: 60vh; overflow-y: auto; padding: 0.5rem;">
+                <!-- User orders will be injected here -->
+            </div>
+
+            <div id="orders-empty" class="hidden" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                <p>لم تقم بطلب أي منتج حتى الآن.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">الرئيسية</span>
+        </a>
+        <a href="#products-grid" class="nav-item">
+            <span class="nav-icon">🏷️</span>
+            <span class="nav-label">العروض</span>
+        </a>
+        <a href="javascript:void(0)" id="mobile-orders-btn" class="nav-item">
+            <span class="nav-icon">📦</span>
+            <span class="nav-label">طلباتي</span>
+        </a>
+        <a href="javascript:void(0)" onclick="handleMobileAccountClick()" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">حسابي</span>
+        </a>
+    </nav>
+
+    <!-- Social Proof Notification -->
+    <div id="social-proof" class="social-proof hidden">
+        <div class="sp-icon">🚀</div>
+        <div class="sp-content">
+            <div class="sp-user" id="sp-user">شخص ما من وهران</div>
+            <div class="sp-action">انضم للتو لصفقة <span id="sp-product">...</span></div>
+        </div>
+    </div>
+
+    <!-- Mobile Account Modal -->
+    <div id="mobile-account-modal" class="modal hidden">
+        <div class="modal-content" style="text-align: center; max-width: 350px;">
+            <span class="close-modal" id="close-mobile-account-btn">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 1.5rem; font-size: 1.5rem; border: none;">حسابي</h2>
+            <p id="mobile-user-email" style="margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.9rem;"></p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="super-admin.html" id="mobile-super-admin-btn" class="action-btn hidden" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #EF4444; color: #EF4444; text-decoration: none;">إدارة الشركة</a>
+                <a href="admin.html" id="mobile-admin-btn" class="action-btn hidden" style="background: rgba(245, 158, 11, 0.1); border: 1px solid var(--accent-gold); color: var(--accent-gold); text-decoration: none;">لوحة التحكم</a>
+                <button id="mobile-logout-btn" class="action-btn" style="background: transparent; border: 1px solid var(--border-light); color: var(--text-main);">تسجيل الخروج</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Immersive Product Detail Overlay -->
+    <div id="product-detail-overlay" class="detail-overlay">
+        <div class="close-detail" onclick="closeProductDetail()">&times;</div>
+        <div id="detail-content-target"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

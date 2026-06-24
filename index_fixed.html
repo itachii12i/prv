@@ -1,0 +1,2502 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Apply theme instantly to avoid flash of wrong theme -->
+    <script>
+        (function(){
+            try {
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.body.classList.add('dark-mode');
+                    });
+                }
+            } catch(e) {}
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6B2FA0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>LodeaLode.dz | ????? ?????? ??????? ?????? ?????? ?? ???????</title>
+    
+    <!-- Advanced SEO & Open Graph Meta Tags -->
+    <meta name="description" content="???? ????? ???????? ?? ???? ???????? ??? 58 ??????? ??????? ?? ??????? ?????? ????? ?????? ?????? ?? ???? 100% ?????? ??? ????????.">
+    <meta name="keywords" content="?????? ??????? ???????, lodealode.dz, ????? ???????, ????? ?????? ???????, ???? ??? ???????, ????? ??? ????????, 58 ?????">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="LodeaLode.dz">
+    <link rel="canonical" href="https://lodealode.com/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="LodeaLode.dz | ????? ?????? ??????? ?????? ?????? ?? ???????">
+    <meta property="og:description" content="???? ????? ???????? ?? ???? ???????? ??????? ??????? ?? ??????? ?????? ????? ?????? ?????? ?? ???? 100% ?????? ??? ????????.">
+    <meta property="og:image" content="logo.png">
+    <meta property="og:url" content="https://lodealode.com/">
+    <meta property="og:site_name" content="LodeaLode.dz">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LodeaLode.dz | ????? ?????? ??????? ?? ???????">
+    <meta name="twitter:description" content="????? ?? ??????? ???? ??? 40% ?? ??? ?????. ????? ??? ???????? ????? ??????? ???? ????? ???????? ????">
+    <meta name="twitter:image" content="logo.png">
+
+    <!-- Google Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "LodeaLode.dz",
+      "url": "https://lodealode.com/",
+      "description": "???? ?????? ??????? ?????? ?? ??????? ?????? ?????? ?????? ?????? ????? ????????.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://lodealode.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobile.css">
+    
+    <!-- External libraries -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="index.js" defer></script>
+    <script src="mobile.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+    </script>
+    <!-- Background Watermark -->
+    <div class="watermark-bg"></div>
+
+    <!-- ===== ANNOUNCEMENT BAR ===== -->
+    <div class="announcement-bar">
+        <div class="announcement-marquee">
+            <div class="announcement-track">
+                <span class="ann-item">?? ???? ?????????! ????? ????? ?????? ????</span>
+                <span class="ann-sep">?</span>
+                <span class="ann-item"><a href="#workflow-card" style="color: inherit; text-decoration: underline;">?? ????? ????? ??? ?????? ??????? ???????</a></span>
+                <span class="ann-sep">?</span>
+                <span class="ann-item">? ????? ?????: ?? ????? ?????? ????? ?????? ??????!</span>
+                <span class="ann-sep">?</span>
+                <span class="ann-item">?? ????? ??? ???????? ???? ????? ???????? ????</span>
+                <span class="ann-sep">?</span>
+                <!-- duplicate for seamless infinite loop -->
+                <span class="ann-item">?? ???? ?????????! ????? ????? ?????? ????</span>
+                <span class="ann-sep">?</span>
+                <span class="ann-item"><a href="#workflow-card" style="color: inherit; text-decoration: underline;">?? ????? ????? ??? ?????? ??????? ???????</a></span>
+                <span class="ann-sep">?</span>
+                <span class="ann-item">? ????? ?????: ?? ????? ?????? ????? ?????? ??????!</span>
+                <span class="ann-sep">?</span>
+                <span class="ann-item">?? ????? ??? ???????? ???? ????? ???????? ????</span>
+                <span class="ann-sep">?</span>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    /* ??? NEW HOME PAGE STYLES ??? */
+    .home-wrapper {
+        max-width: 100%;
+        margin: 0 auto;
+        background: #FAF9FD;
+        min-height: 100vh;
+        font-family: 'Cairo', sans-serif;
+        transition: background-color 0.3s ease;
+    }
+    @media (max-width: 768px) {
+        .home-wrapper {
+            max-width: 480px;
+            padding-bottom: 90px;
+        }
+        .home-desktop-nav {
+            display: none !important;
+        }
+        .home-greeting {
+            display: none !important;
+        }
+    }
+    @media (min-width: 769px) {
+        .home-wrapper {
+            max-width: 1200px;
+            padding-bottom: 40px;
+        }
+    }
+    body { background: #FAF9FD !important; transition: background-color 0.3s ease; }
+
+    /* Header */
+    .home-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        border-bottom: 1px solid rgba(109, 40, 217, 0.08);
+        box-shadow: 0 4px 20px rgba(109, 40, 217, 0.03);
+    }
+    .home-logo { display: flex; align-items: center; gap: 8px; }
+    .home-logo img { height: 32px; object-fit: contain; }
+    .home-logo span { font-size: 1.05rem; font-weight: 900; color: #6D28D9; }
+    .home-header-right { display: flex; align-items: center; gap: 10px; }
+    .home-greeting { font-size: 0.9rem; font-weight: 700; color: #4B5563; }
+    .home-login-btn {
+        background: linear-gradient(135deg, #6D28D9 0%, #5B21B6 100%);
+        color: #fff;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25);
+    }
+    .home-login-btn:hover { 
+        background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); 
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(109, 40, 217, 0.35);
+    }
+    .home-login-btn:active { transform: scale(0.96); }
+    .home-login-btn.hidden { display: none !important; }
+
+    /* Account Pill (shown after login) */
+    .home-account-pill {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        background: rgba(109,40,217,0.06);
+        border: 1.5px solid rgba(109,40,217,0.12);
+        padding: 5px 14px 5px 6px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+    }
+    .home-account-pill:hover {
+        background: rgba(109,40,217,0.1);
+        border-color: rgba(109,40,217,0.25);
+    }
+    .home-account-pill.visible { display: flex; }
+    .home-account-avatar {
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        background: #6D28D9;
+        color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 900;
+        flex-shrink: 0;
+    }
+    .home-account-name {
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: #1E1B4B;
+        white-space: nowrap;
+        max-width: 120px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .home-account-pill .fa-chevron-down {
+        font-size: 0.6rem;
+        color: #9CA3AF;
+        margin-right: 2px;
+    }
+    .home-bell-btn {
+        background: rgba(109,40,217,0.08);
+        border: none;
+        width: 38px; height: 38px;
+        border-radius: 50%;
+        color: #6D28D9;
+        font-size: 1.1rem;
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s ease;
+    }
+    .home-bell-btn:hover {
+        background: rgba(109, 40, 217, 0.15);
+        transform: scale(1.05);
+    }
+
+    /* Search */
+    .home-search {
+        padding: 12px 16px;
+        background: #FAF9FD;
+        transition: background-color 0.3s ease;
+    }
+    .home-search-box {
+        display: flex; align-items: center; gap: 10px;
+        background: #FFFFFF;
+        border-radius: 16px;
+        padding: 0 16px;
+        border: 1px solid rgba(109, 40, 217, 0.12);
+        box-shadow: 0 4px 15px rgba(109, 40, 217, 0.03);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .home-search-box:focus-within { 
+        border-color: #6D28D9; 
+        box-shadow: 0 4px 20px rgba(109, 40, 217, 0.15);
+        transform: translateY(-1px);
+    }
+    .home-search-box i { color: #9CA3AF; }
+    .home-search-box input {
+        border: none; background: transparent;
+        flex: 1; padding: 12px 0;
+        font-size: 0.95rem; color: #1E1B4B;
+        outline: none; font-family: 'Cairo', sans-serif;
+    }
+
+    /* Hero Banner */
+    .hero-banner-card {
+        margin: 12px 16px 20px;
+        background: linear-gradient(135deg, rgba(107, 47, 160, 0.82) 0%, rgba(20, 14, 45, 0.92) 60%, rgba(29, 184, 168, 0.3) 100%), url('hero_banner_realistic.png') no-repeat center center;
+        background-size: cover;
+        border-radius: 24px;
+        padding: 36px 24px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        overflow: hidden;
+        min-height: 240px;
+        box-shadow: 0 12px 35px rgba(107, 47, 160, 0.2);
+        transition: all 0.3s ease;
+    }
+    .hero-banner-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(107, 47, 160, 0.3);
+    }
+    .hero-banner-card::before {
+        display: none;
+    }
+    .hero-tag {
+        background: rgba(29, 184, 168, 0.15);
+        border: 1px solid rgba(29, 184, 168, 0.3);
+        color: #5AD4C8;
+        font-size: 0.72rem;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .hero-text {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        text-align: right;
+    }
+    .hero-text h2 {
+        font-size: 1.85rem;
+        font-weight: 900;
+        color: #FFFFFF;
+        line-height: 1.35;
+        margin-bottom: 8px;
+        text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    }
+    .hero-text h2 span {
+        background: linear-gradient(120deg, #A78BFA 0%, #1DB8A8 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: none;
+        font-weight: 950;
+    }
+    .hero-text p {
+        font-size: 0.88rem;
+        color: #E2E8F0;
+        line-height: 1.6;
+        max-width: 320px;
+        text-shadow: 0 1px 5px rgba(0,0,0,0.4);
+        font-weight: 600;
+        margin-bottom: 16px;
+    }
+    .hero-cta-btn {
+        background: linear-gradient(135deg, #1DB8A8 0%, #158F83 100%);
+        color: #fff;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 12px;
+        font-family: 'Cairo', sans-serif;
+        font-weight: 800;
+        font-size: 0.82rem;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(29, 184, 168, 0.4);
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .hero-cta-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(29, 184, 168, 0.6);
+    }
+    .hero-cta-btn:active {
+        transform: scale(0.97);
+    }
+    .hero-icon {
+        display: none;
+    }
+
+    /* Section Header */
+    .section-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 16px;
+        margin-bottom: 14px;
+    }
+    .section-row h2 { 
+        font-size: 1.15rem; 
+        font-weight: 800; 
+        color: #1E1B4B; 
+        position: relative;
+        padding-right: 12px;
+    }
+    .section-row h2::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 16px;
+        background: #6D28D9;
+        border-radius: 2px;
+    }
+    .section-row a {
+        font-size: 0.82rem;
+        font-weight: 800;
+        color: #6D28D9;
+        text-decoration: none;
+        background: rgba(109,40,217,0.08);
+        padding: 4px 12px;
+        border-radius: 20px;
+        transition: all 0.2s ease;
+    }
+    .section-row a:hover {
+        background: rgba(109, 40, 217, 0.15);
+        transform: translateX(-2px);
+    }
+
+    /* Hot Products Horizontal Scroll */
+    .hot-scroll {
+        display: flex;
+        gap: 14px;
+        padding: 0 16px 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .hot-scroll::-webkit-scrollbar { display: none; }
+
+    /* Hot Product Card */
+    .hot-card {
+        min-width: 160px;
+        max-width: 160px;
+        background: #fff;
+        border-radius: 20px;
+        border: 1px solid rgba(109, 40, 217, 0.06);
+        padding: 14px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 4px 18px rgba(109, 40, 217, 0.03);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .hot-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(109, 40, 217, 0.08);
+        border-color: rgba(109, 40, 217, 0.15);
+    }
+    .hot-card:active { transform: scale(0.97); }
+    .hot-card-img {
+        width: 100%;
+        height: 100px;
+        object-fit: contain;
+        margin-bottom: 10px;
+        border-radius: 12px;
+        background: #FAF9FD;
+        transition: transform 0.3s ease;
+    }
+    .hot-card:hover .hot-card-img {
+        transform: scale(1.05);
+    }
+    .hot-card-img-fallback {
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(135deg, #6D28D9, #8B5CF6);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 10px;
+        color: white; font-size: 2rem;
+    }
+    .hot-card-cat {
+        font-size: 0.68rem; font-weight: 800;
+        color: #7C3AED;
+        background: rgba(124, 58, 237, 0.08);
+        padding: 2px 8px; border-radius: 8px;
+        display: inline-block; margin-bottom: 5px;
+    }
+    .hot-card-name {
+        font-size: 0.82rem; font-weight: 800;
+        color: #1E1B4B;
+        line-height: 1.3;
+        margin-bottom: 4px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .hot-card-sub { font-size: 0.72rem; color: #9CA3AF; margin-bottom: 6px; }
+    .hot-card-price {
+        font-size: 1.05rem; font-weight: 900;
+        color: #1E1B4B;
+        margin-bottom: 4px;
+    }
+    .hot-card-price span { font-size: 0.75rem; font-weight: 700; }
+    .hot-card-buyers {
+        font-size: 0.72rem; font-weight: 700;
+        color: #6B7280;
+        display: flex; align-items: center; gap: 4px;
+        margin-bottom: 10px;
+    }
+    .hot-card-buyers i { color: #10B981; }
+    .hot-join-btn {
+        width: 100%;
+        padding: 8px;
+        background: linear-gradient(135deg, #6D28D9 0%, #5B21B6 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.82rem;
+        font-weight: 800;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        margin-top: auto;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(109, 40, 217, 0.2);
+    }
+    .hot-join-btn:hover { 
+        background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); 
+        box-shadow: 0 6px 15px rgba(109, 40, 217, 0.35);
+    }
+
+    /* Skeleton for hot cards */
+    .hot-skel {
+        min-width: 160px;
+        max-width: 160px;
+        background: #fff;
+        border-radius: 18px;
+        padding: 14px;
+        flex-shrink: 0;
+    }
+    .skel-box {
+        background: linear-gradient(90deg, #F0F0F0 25%, #F8F8F8 50%, #F0F0F0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8px;
+    }
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    /* Category Cards */
+    .cats-scroll {
+        display: flex;
+        gap: 12px;
+        padding: 0 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .cats-scroll::-webkit-scrollbar { display: none; }
+    .cat-card {
+        min-width: 110px;
+        background: #fff;
+        border-radius: 18px;
+        border: 1px solid #F0F0F0;
+        padding: 16px 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+        flex-shrink: 0;
+        transition: transform 0.2s;
+    }
+    .cat-card:active { transform: scale(0.97); }
+    .cat-card-img {
+        width: 50px; height: 50px;
+        object-fit: cover;
+        border-radius: 12px;
+        background: #F3F4F6;
+    }
+    .cat-card-icon {
+        width: 50px; height: 50px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+    }
+    .cat-card-name { font-size: 0.85rem; font-weight: 800; color: #1E1B4B; }
+    .cat-arrow {
+        width: 22px; height: 22px;
+        background: #6D28D9;
+        border-radius: 50%;
+        color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.7rem;
+    }
+
+    /* Trust bar */
+    .trust-strip {
+        display: flex;
+        gap: 8px;
+        padding: 12px 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        margin-bottom: 4px;
+    }
+    .trust-strip::-webkit-scrollbar { display: none; }
+    .trust-chip {
+        display: flex; align-items: center; gap: 6px;
+        background: #fff;
+        border: 1px solid rgba(109, 40, 217, 0.08);
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #4B5563;
+        white-space: nowrap;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(109, 40, 217, 0.02);
+        transition: all 0.2s ease;
+    }
+    .trust-chip:hover {
+        transform: translateY(-2px);
+        border-color: rgba(109, 40, 217, 0.2);
+        box-shadow: 0 6px 15px rgba(109, 40, 217, 0.08);
+        background: #FAF9FD;
+    }
+    
+    /* Hide legacy/duplicate desktop sections on the homepage */
+    .navbar,
+    .explainer-container,
+    .hero-premium,
+    .shop-profile-bar,
+    .categories-visual-section,
+    .trust-bar,
+    .products-section,
+    .about-lodea-section,
+    .why-section,
+    .lead-magnet-section,
+    .blog-section,
+    .testimonials-section {
+        display: none !important;
+    }
+
+    /* Mobile-first Category section override */
+    .cats-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        padding: 0 16px;
+    }
+    .cat-card-premium {
+        border-radius: 20px;
+        padding: 12px 8px;
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 12px rgba(109, 40, 217, 0.03);
+        min-height: 72px;
+        text-decoration: none;
+        border: 1px solid transparent;
+    }
+    .cat-card-premium:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(109, 40, 217, 0.08);
+    }
+    .cat-card-premium:active {
+        transform: scale(0.96);
+    }
+    /* Specific Category Themes */
+    .cat-card-premium.cat-laptops {
+        background: #E0F2FE; /* Light Blue */
+    }
+    .cat-card-premium.cat-phones {
+        background: #F3E8FF; /* Light Purple */
+    }
+    .cat-card-premium.cat-appliances {
+        background: #ECFDF5; /* Light Green */
+    }
+    .cat-card-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        flex: 1;
+        text-align: right;
+    }
+    .cat-card-name {
+        font-size: 0.75rem;
+        font-weight: 900;
+        color: #1E1B4B;
+        line-height: 1.2;
+    }
+    .cat-card-arrow {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+        color: #fff;
+        margin-top: 2px;
+    }
+    .cat-laptops .cat-card-arrow { background: #2563EB; }
+    .cat-phones .cat-card-arrow { background: #7C3AED; }
+    .cat-appliances .cat-card-arrow { background: #059669; }
+    
+    .cat-card-media {
+        width: 38px;
+        height: 38px;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    /* Bottom Navigation Active Home Button Styling */
+    .mobile-bottom-nav .nav-item {
+        position: relative;
+        overflow: visible;
+    }
+    .home-nav-circle {
+        width: 48px;
+        height: 48px;
+        background: #6D28D9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(109, 40, 217, 0.4);
+        margin-top: -18px;
+        transition: transform 0.2s;
+    }
+    .mobile-bottom-nav .nav-item:active .home-nav-circle {
+        transform: scale(0.92);
+    }
+    .mobile-bottom-nav .nav-item#mobile-home-btn.active .home-nav-circle {
+        background: #6D28D9;
+    }
+    .mobile-bottom-nav .nav-item#mobile-home-btn.active .home-nav-circle i {
+        color: #fff;
+    }
+    .mobile-bottom-nav .nav-item#mobile-home-btn .home-nav-circle i {
+        color: #fff;
+        font-size: 1.25rem;
+        margin: 0;
+    }
+
+    /* Search Suggestions Dropdown inside Search Box */
+    .home-search-box {
+        position: relative;
+    }
+    .search-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border: 1px solid #F0F0F0;
+        margin-top: 8px;
+        max-height: 300px;
+        overflow-y: auto;
+        z-index: 1000;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .search-dropdown.hidden { display: none !important; }
+    
+    .search-trending-title {
+        font-size: 0.8rem;
+        font-weight: 800;
+        color: #6D28D9;
+        margin-bottom: 4px;
+        text-align: right;
+    }
+    .search-trending-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+        justify-content: flex-start;
+        direction: rtl;
+    }
+    .trending-chip {
+        background: #F3F4F6;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #4B5563;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+    }
+    .trending-chip:active { background: #E5E7EB; }
+    
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.2s;
+        text-align: right;
+        direction: rtl;
+    }
+    .search-result-item:hover, .search-result-item:active { background: #F3F4F6; }
+    .search-result-item img {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 6px;
+        background: #F9FAFB;
+    }
+    .search-result-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        flex: 1;
+    }
+    .search-result-title {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #1E1B4B;
+    }
+    .search-result-price {
+        font-size: 0.8rem;
+        font-weight: 900;
+        color: #6D28D9;
+    }
+    .search-no-results {
+        font-size: 0.85rem;
+        color: #6B7280;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    @media (min-width: 769px) {
+        /* Desktop header nav links style */
+        .home-desktop-nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin: 0 auto;
+        }
+        .desktop-nav-link {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #4B5563;
+            text-decoration: none;
+            transition: all 0.2s;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .desktop-nav-link:hover {
+            color: #6D28D9;
+            background: rgba(109, 40, 217, 0.04);
+        }
+        .desktop-nav-link.active {
+            color: #6D28D9;
+            background: rgba(109, 40, 217, 0.08);
+        }
+
+        /* Responsive Categories Grid */
+        .cats-container {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .cat-card-premium {
+            padding: 16px 20px;
+            min-height: 90px;
+        }
+        .cat-card-name {
+            font-size: 0.95rem;
+        }
+        .cat-card-media {
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Active Rooms Horizontal Scroll to Grid */
+        .hot-scroll {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            overflow-x: visible;
+            padding: 4px 0;
+        }
+        .hot-card {
+            min-width: 0;
+            max-width: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .hot-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(109, 40, 217, 0.1);
+        }
+        .hot-card-img {
+            height: 140px;
+        }
+        .hot-card-name {
+            font-size: 0.92rem;
+            height: 38px;
+        }
+        .hot-join-btn {
+            padding: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Bottom Nav Hidden on Desktop (Now Shown Centered) */
+        .mobile-bottom-nav {
+            display: flex !important;
+            position: fixed !important;
+            bottom: 20px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: calc(100% - 40px) !important;
+            max-width: 500px !important;
+            border-radius: 30px !important;
+            z-index: 1000 !important;
+        }
+    }
+    /* Animated GIF section */
+    .animated-gif {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin-top: 20px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Workflow Section Styles */
+    .workflow-container {
+        margin: 20px 16px 24px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 20px;
+        border: 1px solid #E5E7EB;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    }
+    body.dark-mode .workflow-container {
+        background: #1A1133;
+        border-color: rgba(255,255,255,0.08);
+    }
+    .workflow-header {
+        text-align: center;
+        margin-bottom: 18px;
+    }
+    .workflow-header h3 {
+        font-size: 1.05rem;
+        font-weight: 900;
+        color: #1E1B4B;
+        margin-bottom: 4px;
+    }
+    body.dark-mode .workflow-header h3 { color: #fff; }
+    .workflow-header p {
+        font-size: 0.78rem;
+        color: #6B7280;
+    }
+    body.dark-mode .workflow-header p { color: #94A3B8; }
+    
+    :root {
+        --workflow-overlay: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(243, 244, 246, 0.75) 100%);
+    }
+    body.dark-mode {
+        --workflow-overlay: linear-gradient(135deg, rgba(20, 10, 45, 0.72) 0%, rgba(10, 5, 25, 0.78) 100%);
+    }
+    .workflow-card {
+        background-image: var(--workflow-overlay), url('assets/workflow/step1.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid #E5E7EB;
+        position: relative;
+        overflow: hidden;
+        min-height: 230px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.3s ease;
+    }
+    body.dark-mode .workflow-card {
+        background-image: var(--workflow-overlay), url('assets/workflow/step1.png');
+        border-color: rgba(255,255,255,0.05);
+    }
+    
+    .workflow-progress-track {
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: rgba(0,0,0,0.05);
+    }
+    body.dark-mode .workflow-progress-track { background: rgba(255,255,255,0.05); }
+    .workflow-progress-fill {
+        height: 100%;
+        width: 11.1%;
+        background: #6D28D9;
+        transition: width 0.4s ease, background-color 0.4s;
+    }
+    
+    .workflow-step-content {
+        text-align: center;
+        padding: 10px 0;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .workflow-badge {
+        font-size: 0.72rem;
+        font-weight: 800;
+        color: #6D28D9;
+        background: rgba(109,40,217,0.08);
+        padding: 2px 10px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+    }
+    body.dark-mode .workflow-badge {
+        color: #A78BFA;
+        background: rgba(167,139,250,0.15);
+    }
+    
+    .workflow-icon-wrap {
+        width: 60px; height: 60px;
+        border-radius: 50%;
+        background: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.8rem;
+        color: #6D28D9;
+        margin-bottom: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    body.dark-mode .workflow-icon-wrap {
+        background: #241A45;
+        color: #A78BFA;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .workflow-card:hover .workflow-icon-wrap {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .workflow-step-title {
+        font-size: 1rem;
+        font-weight: 900;
+        color: #1E1B4B;
+        margin-bottom: 8px;
+    }
+    body.dark-mode .workflow-step-title { color: #fff; }
+    
+    .workflow-step-desc {
+        font-size: 0.82rem;
+        color: #4B5563;
+        line-height: 1.6;
+        max-width: 280px;
+    }
+    body.dark-mode .workflow-step-desc { color: #94A3B8; }
+    
+    .workflow-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 15px;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding-top: 12px;
+    }
+    body.dark-mode .workflow-nav { border-color: rgba(255,255,255,0.05); }
+    
+    .workflow-nav button {
+        background: transparent;
+        border: none;
+        color: #6D28D9;
+        font-weight: 800;
+        font-size: 0.82rem;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        display: flex; align-items: center; gap: 6px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        transition: background 0.2s;
+    }
+    body.dark-mode .workflow-nav button { color: #A78BFA; }
+    .workflow-nav button:hover {
+        background: rgba(109,40,217,0.05);
+    }
+    body.dark-mode .workflow-nav button:hover {
+        background: rgba(167,139,250,0.08);
+    }
+    #workflow-play-btn {
+        width: 32px; height: 32px;
+        padding: 0;
+        justify-content: center;
+    }
+    
+    .btn-view-infographic {
+        background: rgba(109,40,217,0.06);
+        border: 1.5px dashed #6D28D9;
+        color: #6D28D9;
+        font-weight: 800;
+        font-size: 0.82rem;
+        padding: 8px 18px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    body.dark-mode .btn-view-infographic {
+        background: rgba(167,139,250,0.05);
+        border-color: #A78BFA;
+        color: #A78BFA;
+    }
+    .btn-view-infographic:hover {
+        background: rgba(109,40,217,0.1);
+        transform: translateY(-2px);
+    }
+    body.dark-mode .btn-view-infographic:hover {
+        background: rgba(167,139,250,0.1);
+    }
+    
+    /* Lightbox Modal for Infographic */
+    .lightbox-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(10, 6, 25, 0.96);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+    }
+    .lightbox-modal.active {
+        display: flex;
+    }
+    .lightbox-content {
+        position: relative;
+        width: 95%;
+        max-width: 1100px;
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        background: rgba(26, 17, 51, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 24px;
+        padding: 20px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+        animation: zoomIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        overflow: hidden;
+    }
+    @keyframes zoomIn {
+        from { transform: scale(0.95); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+    }
+    .lightbox-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 12px;
+        direction: rtl;
+    }
+    .lightbox-title {
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 800;
+        font-family: 'Cairo', sans-serif;
+        margin: 0;
+    }
+    .lightbox-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    .lightbox-btn {
+        background: rgba(109, 40, 217, 0.2);
+        border: 1px solid rgba(167, 139, 250, 0.3);
+        color: #E9D5FF;
+        padding: 6px 14px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        font-family: 'Cairo', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+        font-weight: 700;
+    }
+    .lightbox-btn:hover {
+        background: rgba(109, 40, 217, 0.35);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+    .lightbox-close {
+        color: #fff;
+        font-size: 1.8rem;
+        cursor: pointer;
+        font-weight: 800;
+        background: rgba(255, 255, 255, 0.08);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: static;
+        top: auto;
+        left: auto;
+    }
+    .lightbox-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: #EF4444;
+        transform: rotate(90deg);
+    }
+    .lightbox-img-container {
+        width: 100%;
+        flex-grow: 1;
+        overflow: auto;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(10, 6, 25, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        position: relative;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+    .lightbox-img-container::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    .lightbox-img-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .lightbox-img-container::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+    }
+    .lightbox-img-container::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+    .lightbox-img {
+        max-width: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+        border-radius: 8px;
+        cursor: zoom-in;
+        transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), max-width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), max-height 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .lightbox-img.zoomed {
+        max-width: 250%;
+        max-height: 250%;
+        width: 250%;
+        height: auto;
+        object-fit: contain;
+        transform: scale(1);
+        cursor: zoom-out;
+    }
+</style>
+
+    <div class="home-wrapper">
+
+        <!-- ??? HEADER ??? -->
+        <header class="home-header">
+            <div class="home-logo">
+                <img src="logo.png" alt="LodeaLode" onerror="this.style.display='none'">
+                <span>Lodealode</span>
+            </div>
+            
+            <!-- Desktop navigation links, hidden on mobile -->
+            <div class="home-desktop-nav">
+                <a href="index.html" class="desktop-nav-link active">????????</a>
+                <a href="products.html" class="desktop-nav-link">????????</a>
+                <a href="rooms.html" class="desktop-nav-link">????</a>
+                <a href="javascript:void(0)" onclick="handleMobileAccountClick()" class="desktop-nav-link">?????</a>
+            </div>
+
+            <div class="home-header-right">
+                <span class="home-greeting" id="home-greeting">?????? ??</span>
+                <button type="button" class="theme-toggle btn-ghost" id="theme-toggle-btn" style="background: rgba(109,40,217,0.08); border: none; width: 38px; height: 38px; border-radius: 50%; color: #6D28D9; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; margin-left: 10px;">
+                    <i id="theme-icon" class="fas fa-moon"></i>
+                </button>
+                <a href="login.html" class="home-login-btn" id="home-login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    ????? ??????
+                </a>
+                <div class="home-account-pill" id="home-account-pill" onclick="handleMobileAccountClick()">
+                    <div class="home-account-avatar" id="home-account-avatar">U</div>
+                    <span class="home-account-name" id="home-account-name">?????</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <button class="home-bell-btn" onclick="toggleNotificationsDrawer()">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- ??? SEARCH ??? -->
+        <div class="home-search" id="search-wrapper">
+            <div class="home-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="???? ?? ???? ?? ????..." autocomplete="off">
+                <div id="search-results-dropdown" class="search-dropdown hidden"></div>
+            </div>
+        </div>
+
+        <!-- ??? HERO BANNER ??? -->
+        <div class="hero-banner-card">
+            <div class="hero-text">
+                <div class="hero-tag">
+                    <span>?? ??? ???? ?????? ??????? ?? ??????? ????</span>
+                </div>
+                <h2>???? ?????? ???????<br><span>???? ???? ?? 40%</span></h2>
+                <p>???? ????? ?????????? ?? ???? ???????? ????? ????? ??????????? ?????? ?????? ?? ???????? ???? ???????.</p>
+                <button class="hero-cta-btn" onclick="document.getElementById('hot-scroll').scrollIntoView({behavior:'smooth'})">
+                    ?? ???? ??????? ?????
+                </button>
+            </div>
+        </div>
+        
+        <!-- ??? HOW IT WORKS ANIMATED SECTION ??? -->
+        <div class="workflow-container">
+            <div class="workflow-header">
+                <h3>?? ??? ???? ?????? ??????? ?? LodeaLode?</h3>
+                <p>???? ??????? ??? 9 ???? ???? ?? ??? ????? ?????? ????????</p>
+            </div>
+
+            <!-- Active Step Card -->
+            <div class="workflow-card" id="workflow-card">
+                <div class="workflow-progress-track">
+                    <div class="workflow-progress-fill" id="workflow-progress-fill"></div>
+                </div>
+                
+                <div class="workflow-step-content">
+                    <div class="workflow-badge" id="workflow-step-badge">?????? 1 ?? 9</div>
+                    <div class="workflow-icon-wrap" id="workflow-icon-wrap">
+                        <i class="fas fa-sad-tear"></i>
+                    </div>
+                    <h4 class="workflow-step-title" id="workflow-step-title">???????: ????? ???? ?????</h4>
+                    <p class="workflow-step-desc" id="workflow-step-desc">???? ???? ??? ????? (????? ?????? MacBook Air ???? 209,000 ??) ??? ???? ????? ????? ???? ???? ??? ????? ????? ????.</p>
+                </div>
+
+                <div class="workflow-nav">
+                    <button onclick="prevWorkflowStep()"><i class="fas fa-chevron-right"></i> ??????</button>
+                    <button id="workflow-play-btn" onclick="toggleWorkflowAutoPlay()"><i class="fas fa-pause"></i></button>
+                    <button onclick="nextWorkflowStep()">?????? <i class="fas fa-chevron-left"></i></button>
+                </div>
+            </div>
+
+            <!-- Toggle button for full infographic -->
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn-view-infographic" onclick="openInfographicModal()">
+                    ??? ??? ???? ????? ?????? ??????
+                </button>
+            </div>
+        </div>
+
+        <!-- Lightbox Modal for Full Infographic -->
+        <div id="infographic-modal" class="lightbox-modal" onclick="closeInfographicModal(event)">
+            <div class="lightbox-content" onclick="event.stopPropagation()">
+                <div class="lightbox-header">
+                    <h4 class="lightbox-title">???? ?????? ??????? ?? LodeaLode ????</h4>
+                    <div class="lightbox-actions">
+                        <button class="lightbox-btn" id="lightbox-zoom-btn" onclick="toggleLightboxZoom(event)">
+                            <i class="fas fa-search-plus"></i> ????? ??????
+                        </button>
+                        <span class="lightbox-close" onclick="closeInfographicModal(event)">&times;</span>
+                    </div>
+                </div>
+                <div class="lightbox-img-container">
+                    <img id="lightbox-main-img" src="collective_buying_explainer_1780555091555.png" alt="???? ?????? ???????" class="lightbox-img" onclick="toggleLightboxZoom(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- ??? TRUST CHIPS ??? -->
+        <div class="trust-strip">
+            <div class="trust-chip">?? ??? ???</div>
+            <div class="trust-chip">?? ???? 100%</div>
+            <div class="trust-chip">?? 58 ?????</div>
+            <div class="trust-chip">?? ??? ??????</div>
+        </div>
+
+        <!-- ??? HOT PRODUCTS ??? -->
+        <section style="margin-bottom: 24px;">
+            <div class="section-row">
+                <h2>??? ?????? ??????</h2>
+                <a href="products.html">??? ???? ></a>
+            </div>
+            <div class="hot-scroll" id="hot-scroll">
+                <!-- Skeleton -->
+                <div class="hot-skel"><div class="skel-box" style="height:100px;margin-bottom:10px;"></div><div class="skel-box" style="height:12px;width:50%;margin-bottom:6px;"></div><div class="skel-box" style="height:16px;margin-bottom:6px;"></div><div class="skel-box" style="height:16px;width:60%;margin-bottom:10px;"></div><div class="skel-box" style="height:32px;border-radius:10px;"></div></div>
+                <div class="hot-skel"><div class="skel-box" style="height:100px;margin-bottom:10px;"></div><div class="skel-box" style="height:12px;width:50%;margin-bottom:6px;"></div><div class="skel-box" style="height:16px;margin-bottom:6px;"></div><div class="skel-box" style="height:16px;width:60%;margin-bottom:10px;"></div><div class="skel-box" style="height:32px;border-radius:10px;"></div></div>
+                <div class="hot-skel"><div class="skel-box" style="height:100px;margin-bottom:10px;"></div><div class="skel-box" style="height:12px;width:50%;margin-bottom:6px;"></div><div class="skel-box" style="height:16px;margin-bottom:6px;"></div><div class="skel-box" style="height:16px;width:60%;margin-bottom:10px;"></div><div class="skel-box" style="height:32px;border-radius:10px;"></div></div>
+            </div>
+        </section>
+
+        <!-- ??? BROWSE BY CATEGORY ??? -->
+        <section style="margin-bottom: 24px;">
+            <div class="section-row" style="margin-bottom: 14px;">
+                <h2>???? ??? ?????</h2>
+            </div>
+            <div class="cats-container" id="cats-scroll">
+                <a href="products.html?category=?????????" class="cat-card-premium cat-laptops">
+                    <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=150&q=80" class="cat-card-media" alt="???????">
+                    <div class="cat-card-info">
+                        <span class="cat-card-name">???????</span>
+                        <div class="cat-card-arrow"><i class="fas fa-chevron-left"></i></div>
+                    </div>
+                </a>
+                <a href="products.html?category=?????????" class="cat-card-premium cat-phones">
+                    <img src="https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=150&q=80" class="cat-card-media" alt="?????">
+                    <div class="cat-card-info">
+                        <span class="cat-card-name">?????</span>
+                        <div class="cat-card-arrow"><i class="fas fa-chevron-left"></i></div>
+                    </div>
+                </a>
+                <a href="products.html?category=????? ??????" class="cat-card-premium cat-appliances">
+                    <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=150&q=80" class="cat-card-media" alt="????? ??????????">
+                    <div class="cat-card-info">
+                        <span class="cat-card-name">????? ??????????</span>
+                        <div class="cat-card-arrow"><i class="fas fa-chevron-left"></i></div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- ??? HIDDEN LEGACY ELEMENTS (keep JS compatibility) ??? -->
+        <div id="products-grid" class="hidden" style="display:none!important;"></div>
+        <div id="loading" style="display:none!important;"></div>
+        <div id="error-message" class="hidden" style="display:none!important;"></div>
+        <div id="empty-state" class="hidden" style="display:none!important;"></div>
+        <div id="ai-recommendations-section" class="hidden" style="display:none!important;"></div>
+        <div id="ai-recommendations-grid" style="display:none!important;"></div>
+        <div id="user-gamification-board" class="hidden" style="display:none!important;"></div>
+        <div id="product-showcase" style="display:none;"></div>
+
+    </div><!-- end home-wrapper -->
+
+    <!-- ??? PRODUCT DETAIL OVERLAY (needed by JS) ??? -->
+    <div id="product-detail-overlay" class="detail-overlay">
+        <div class="close-detail" onclick="closeProductDetail()">&times;</div>
+        <div id="detail-content-target"></div>
+    </div>
+
+
+
+        <!-- ===== NAVBAR ===== -->
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <img src="logo.png" alt="LodeaLode.dz" class="logo-img">
+                <span class="logo-text">LodeaLode</span>
+            </a>
+            <div class="search-wrapper">
+                <span class="search-icon-el"><i class="fas fa-search"></i></span>
+                <input type="text" class="search-input" placeholder="???? ?? ???? ??????? ?????????..." autocomplete="off">
+                <div class="search-dropdown hidden"></div>
+            </div>
+            <div id="auth-controls" class="auth-controls">
+                <button id="noti-bell-btn" class="btn-ghost" style="padding: 10px; border-radius: 50%; font-size: 1.15rem; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; position: relative; margin-left: 10px;" onclick="toggleNotificationsDrawer()">
+                    <i class="fas fa-bell"></i>
+                    <span id="noti-badge" style="position: absolute; top: 8px; right: 8px; background: var(--danger); width: 8px; height: 8px; border-radius: 50%; display: none;"></span>
+                </button>
+                <button id="login-btn" class="nav-btn"><i class="fas fa-user"></i> ???? / ????</button>
+                <div id="user-info" class="user-info-pill hidden">
+                    <span id="user-email" class="user-email-span" title=""></span>
+                    <button type="button" id="my-orders-btn" class="btn-ghost" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 20px;">??????</button>
+                    <button type="button" id="logout-btn" class="btn-ghost" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 20px; color: #F87171;">????</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- ===== USER GAMIFICATION DASHBOARD ===== -->
+        <div id="user-gamification-board" class="gamification-dashboard reveal-up hidden">
+            <div class="gd-profile-side">
+                <div class="gd-avatar-wrapper">
+                    <div class="gd-avatar" id="user-gd-avatar">U</div>
+                    <div class="gd-level-badge" id="user-gd-level">1</div>
+                </div>
+                <div class="gd-info-text">
+                    <h3 id="user-gd-title">??????? ???????? ??</h3>
+                    <div class="gd-xp-progress">
+                        <div class="gd-xp-bar-track">
+                            <div class="gd-xp-bar-fill" id="user-gd-xp-fill" style="width: 25px;"></div>
+                        </div>
+                        <span class="gd-xp-text" id="user-gd-xp-text">0 / 100 XP</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="gd-stats-row">
+                <div class="gd-stat-card">
+                    <div class="gd-stat-icon-text">?? <span id="user-gd-streak">1</span></div>
+                    <div class="gd-stat-label">????? ????</div>
+                </div>
+                <div class="gd-stat-card" style="cursor: pointer;" onclick="openReferralModal()">
+                    <div class="gd-stat-icon-text">?? <span id="user-gd-points">150</span></div>
+                    <div class="gd-stat-label">???? ?????</div>
+                </div>
+            </div>
+
+            <!-- Badges slot showcase -->
+            <div class="gd-badges-side">
+                <div class="gd-stat-label" style="text-align: center; margin-bottom: 8px;">??????? ????????</div>
+                <div class="gd-badges-grid">
+                    <div class="gd-badge-slot active" data-title="???? ?????? ??????? ??" id="badge-pioneer">??</div>
+                    <div class="gd-badge-slot" data-title="??? ??????? ?????? ??" id="badge-streak">??</div>
+                    <div class="gd-badge-slot" data-title="??????? ???????? ??" id="badge-legend">??</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ANIMATED EXPLAINER ===== -->
+        <div class="explainer-container reveal-up">
+            <div class="explainer-header">
+                <h2>??? ???? ?????? ??????? ?? <span style="color: var(--primary);">LodeaLode.dz</span>?</h2>
+                <p>3 ????? ????? ?????? ?????? ????????!</p>
+            </div>
+            <div class="explainer-animation">
+                <!-- Single continuous progress bar behind the steps -->
+                <div class="step-progress-bar">
+                    <div class="step-progress-fill" id="explainer-progress-fill"></div>
+                </div>
+
+                <div class="ex-step ex-step-1">
+                    <div class="ex-icon"><i class="fas fa-users"></i></div>
+                    <div class="ex-text">1. ???? ??????<br><small>??? ??? ?????? ?????? ????? ??????</small></div>
+                </div>
+                
+                <div class="ex-step ex-step-2">
+                    <div class="ex-icon"><i class="fas fa-handshake"></i></div>
+                    <div class="ex-text">2. ????? ????? ???????<br><small>????? ?????? ?????? ?????? ???????</small></div>
+                </div>
+                
+                <div class="ex-step ex-step-3">
+                    <div class="ex-icon"><i class="fas fa-box-open"></i></div>
+                    <div class="ex-text">3. ????? ??????<br><small>????? ??? ????? ??????? 100%</small></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PREMIUM HERO SECTION ===== -->
+        <header class="hero-premium reveal-up active" id="hero-premium-section">
+            <div class="hero-premium-grid">
+                <div class="hero-premium-content">
+                    <div class="hero-premium-badge">?? ?????? ??????? ????? ?? ??????? ?? 58 ?????</div>
+                    <h1 class="hero-premium-title">????? ???????????<br><span>?????? ?????? ??????</span></h1>
+                    <p class="hero-premium-desc">???? ????? ?????????? ?? ???? ???????? ????? ????? ??????????? ?????? ?????? ?? ???????? ???? ???????. ??? ??? 40% ?? ???? ???????? ?????!</p>
+                    <div class="hero-premium-cta-group">
+                        <button class="btn-solid" onclick="document.getElementById('products-section').scrollIntoView({behavior:'smooth'})">
+                            ?? ???? ??????? ?????
+                        </button>
+                        <button class="btn-ghost" onclick="document.getElementById('why-us-section').scrollIntoView({behavior:'smooth'})">
+                            ????? ??????? ????
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-premium-showcase">
+                    <div class="hero-showcase-backdrop"></div>
+                    <div class="hero-showcase-wrapper" style="text-align: center;">
+                        <img src="hero_banner.png" alt="????? ??????????? ??????" class="hero-premium-image" style="width: 100%; max-width: 420px; object-fit: contain; filter: drop-shadow(0 15px 40px rgba(0, 0, 0, 0.7)); border-radius: 20px; transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.03) translateY(-5px)'" onmouseout="this.style.transform='scale(1) translateY(0)'">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== SHOP PROFILE INFO BAR ===== -->
+        <div class="shop-profile-bar reveal-up">
+            <div class="shop-profile-info">
+                <div class="shop-profile-logo-wrapper">
+                    <div class="shop-profile-logo">
+                        <img src="logo.png" alt="LodeaLode.dz" onerror="this.src='https://via.placeholder.com/100?text=Lode'">
+                    </div>
+                    <span class="shop-profile-verify"><i class="fas fa-check"></i></span>
+                </div>
+                <div class="shop-profile-meta">
+                    <h3>LodeaLode.dz <span class="shop-profile-badge">???? ???? ????</span></h3>
+                    <div class="shop-profile-meta-stats">
+                        <span>? <strong>99.8%</strong> ????? ??????</span>
+                        <span>?? <strong>4K+</strong> ???? ??????</span>
+                        <span>?? <strong>3.3K+</strong> ????? ???</span>
+                    </div>
+                </div>
+            </div>
+            <div class="shop-profile-actions">
+                <button class="btn-action" onclick="openReferralModal()">
+                    <i class="fas fa-gift"></i> ???? ?????
+                </button>
+                <button class="btn-action" onclick="toggleNotificationsDrawer()">
+                    <i class="fas fa-bell"></i> ?????????
+                </button>
+            </div>
+        </div>
+
+        <!-- ===== SHOP BY CATEGORY SECTION ===== -->
+        <div class="categories-visual-section reveal-up">
+            <h2 class="categories-visual-title">??? ???? ??????? ??? ?????</h2>
+            <div class="categories-visual-grid" id="categories-visual-grid">
+                <div class="category-visual-card active" data-category="all" onclick="filterByCategoryVisual('all')">
+                    <div class="cat-card-glow"></div>
+                    <div class="cat-visual-img-container">
+                        <img src="logo.png" alt="????" onerror="this.src='https://via.placeholder.com/80?text=All'">
+                    </div>
+                    <span class="cat-visual-name">?? ???????</span>
+                    <span class="cat-visual-count">??? ????</span>
+                </div>
+                <div class="category-visual-card" data-category="?????????" onclick="filterByCategoryVisual('?????????')">
+                    <div class="cat-card-glow"></div>
+                    <div class="cat-visual-img-container">
+                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=200&q=80" alt="?????????">
+                    </div>
+                    <span class="cat-visual-name">?????????</span>
+                    <span class="cat-visual-count">????? ??????</span>
+                </div>
+                <div class="category-visual-card" data-category="????" onclick="filterByCategoryVisual('????')">
+                    <div class="cat-card-glow"></div>
+                    <div class="cat-visual-img-container">
+                        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=200&q=80" alt="????">
+                    </div>
+                    <span class="cat-visual-name">???? ??????</span>
+                    <span class="cat-visual-count">???? ?????????</span>
+                </div>
+                <div class="category-visual-card" data-category="?????" onclick="filterByCategoryVisual('?????')">
+                    <div class="cat-card-glow"></div>
+                    <div class="cat-visual-img-container">
+                        <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=200&q=80" alt="?????">
+                    </div>
+                    <span class="cat-visual-name">????? ??????</span>
+                    <span class="cat-visual-count">????? ?????????</span>
+                </div>
+                <div class="category-visual-card" data-category="????? ??????" onclick="filterByCategoryVisual('????? ??????')">
+                    <div class="cat-card-glow"></div>
+                    <div class="cat-visual-img-container">
+                        <img src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=200&q=80" alt="????">
+                    </div>
+                    <span class="cat-visual-name">????? ??????</span>
+                    <span class="cat-visual-count">???? ??????</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TRUST BAR ===== -->
+        <div class="trust-bar reveal-up">
+            <div class="trust-item"><span style="color:var(--success);">??</span> ??? ??? ??????</div>
+            <div class="trust-sep"></div>
+            <div class="trust-item"><span style="color:var(--success);">??</span> ???? ??????? ?????? 100%</div>
+            <div class="trust-sep"></div>
+            <div class="trust-item"><span>??</span> ??? ???? ?? 58 ?????</div>
+            <div class="trust-sep"></div>
+            <div class="trust-item"><span>??</span> ????? ?????? ?????? ?? ??????</div>
+        </div>
+
+        <!-- ===== PRODUCTS SECTION ===== -->
+        <section class="products-section reveal-up" id="products-section">
+            <div class="section-header">
+                <h2 class="section-title">?? ????? ?????? ??????? ??????</h2>
+                <p class="section-sub">???? ???????? ???? ???? ??? ?????? ????? ????? ??????!</p>
+            </div>
+
+            <!-- ===== AI RECOMMENDATIONS ===== -->
+            <div id="ai-recommendations-section" class="reveal-up hidden" style="margin-bottom: 40px;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; background: rgba(107, 47, 160, 0.08); padding: 15px 25px; border-radius: 20px; border: 1px solid rgba(107, 47, 160, 0.2);">
+                    <div style="font-size: 2.2rem; filter: drop-shadow(0 0 10px var(--primary));">?</div>
+                    <div style="text-align: right;">
+                        <h3 style="font-size: 1.25rem; color: #fff; margin-bottom: 4px;">??????? ???? LodeAI ??????? ??</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">????? ????????? ???? ?? ??????? ???????? ?????? ????? ??? ?????????!</p>
+                    </div>
+                </div>
+                <div id="ai-recommendations-grid" class="products-grid">
+                    <!-- Dinamically injected personalized product cards -->
+                </div>
+            </div>
+
+            <!-- Categories Filter -->
+            <div class="categories-tabs">
+                <button class="cat-tab active" data-category="all">????</button>
+                <button class="cat-tab" data-category="?????????">?? ?????????</button>
+                <button class="cat-tab" data-category="????">? ????</button>
+                <button class="cat-tab" data-category="?????">? ?????</button>
+            </div>
+
+            <div id="loading" class="products-grid">
+                <div class="product-card skeleton-card" style="pointer-events: none;">
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: 8px 8px 0 0; margin-bottom: 15px;"></div>
+                    <div class="product-body" style="gap: 0.8rem; padding: 0;">
+                        <div class="skeleton" style="height: 20px; width: 35%; border-radius: 10px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 24px; width: 75%; border-radius: 4px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 25px; width: 45%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 40px; width: 100%; border-radius: 20px; margin-top: auto;"></div>
+                    </div>
+                </div>
+                <div class="product-card skeleton-card" style="pointer-events: none;">
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: 8px 8px 0 0; margin-bottom: 15px;"></div>
+                    <div class="product-body" style="gap: 0.8rem; padding: 0;">
+                        <div class="skeleton" style="height: 20px; width: 35%; border-radius: 10px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 24px; width: 75%; border-radius: 4px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 25px; width: 45%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 40px; width: 100%; border-radius: 20px; margin-top: auto;"></div>
+                    </div>
+                </div>
+                <div class="product-card skeleton-card" style="pointer-events: none;">
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: 8px 8px 0 0; margin-bottom: 15px;"></div>
+                    <div class="product-body" style="gap: 0.8rem; padding: 0;">
+                        <div class="skeleton" style="height: 20px; width: 35%; border-radius: 10px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 24px; width: 75%; border-radius: 4px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 25px; width: 45%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 40px; width: 100%; border-radius: 20px; margin-top: auto;"></div>
+                    </div>
+                </div>
+                <div class="product-card skeleton-card" style="pointer-events: none;">
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: 8px 8px 0 0; margin-bottom: 15px;"></div>
+                    <div class="product-body" style="gap: 0.8rem; padding: 0;">
+                        <div class="skeleton" style="height: 20px; width: 35%; border-radius: 10px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 24px; width: 75%; border-radius: 4px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 25px; width: 45%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 40px; width: 100%; border-radius: 20px; margin-top: auto;"></div>
+                    </div>
+                </div>
+                <div class="product-card skeleton-card" style="pointer-events: none;">
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: 8px 8px 0 0; margin-bottom: 15px;"></div>
+                    <div class="product-body" style="gap: 0.8rem; padding: 0;">
+                        <div class="skeleton" style="height: 20px; width: 35%; border-radius: 10px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 24px; width: 75%; border-radius: 4px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 25px; width: 45%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 40px; width: 100%; border-radius: 20px; margin-top: auto;"></div>
+                    </div>
+                </div>
+                <div class="product-card skeleton-card" style="pointer-events: none;">
+                    <div class="skeleton" style="height: 180px; width: 100%; border-radius: 8px 8px 0 0; margin-bottom: 15px;"></div>
+                    <div class="product-body" style="gap: 0.8rem; padding: 0;">
+                        <div class="skeleton" style="height: 20px; width: 35%; border-radius: 10px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 24px; width: 75%; border-radius: 4px; margin-bottom: 8px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 100%; border-radius: 4px; margin-bottom: 4px;"></div>
+                        <div class="skeleton" style="height: 16px; width: 60%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 10px; width: 100%; border-radius: 5px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 25px; width: 45%; border-radius: 4px; margin-bottom: 15px;"></div>
+                        <div class="skeleton" style="height: 40px; width: 100%; border-radius: 20px; margin-top: auto;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="error-message" class="error-message hidden" style="color: var(--danger); text-align: center; padding: 2rem;"></div>
+
+            <!-- Showcase -->
+            <div id="product-showcase" class="showcase-wrapper">
+                <div class="showcase-close" onclick="closeShowcase()">&times;</div>
+                <div id="showcase-content-target" class="showcase-content"></div>
+            </div>
+
+            <div id="products-grid" class="products-grid hidden"></div>
+
+            <div id="empty-state" class="empty-state hidden" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                <p>?? ???? ????? ????? ?????? ?? ??? ?????. ?????? ??????!</p>
+            </div>
+        </section>
+
+        <!-- ===== ABOUT LODEALODE SECTION ===== -->
+        <section class="about-lodea-section reveal-up" id="about-lodea-section">
+            <div class="about-lodea-grid">
+                <div class="about-lodea-img-side">
+                    <div class="about-circle-frame">
+                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=400&q=80" alt="??? LodeaLode" onerror="this.src='logo.png'">
+                    </div>
+                </div>
+                <div class="about-lodea-content">
+                    <span class="about-tag">?? ????</span>
+                    <h2 class="about-title">??? ???? ???? ?????? ??????? ?????? ?? ????????</h2>
+                    <p class="about-desc">LodeaLode.dz ?? ?????? ????? ???? ??? ????? ???????? ????????. ????? ?? ?????? ?????? ?????? ?????? ?? ???? ??????? ????????? ???? ???? ?????? ????? ?????? ?? ???? ?????? ????? ??? 58. ???? ????????? ???? ?????? ??????? ????????? ???? ?????? ?????? ???????? ???? ??????? ???? ?????? ????? ???? ?????? ??? ????????!</p>
+                    
+                    <div class="about-features-list">
+                        <div class="about-feature-item">
+                            <div class="about-feature-icon">???</div>
+                            <div class="about-feature-text">
+                                <h4>???? ??????? 100%</h4>
+                                <p>?????? ?? ???? ???? ???? ?????? ??????? ????????? ?? ??? ??? ?????.</p>
+                            </div>
+                        </div>
+                        <div class="about-feature-item">
+                            <div class="about-feature-icon">??</div>
+                            <div class="about-feature-text">
+                                <h4>????? ?????? ??????</h4>
+                                <p>???? ?????? ???? ?? ????? ?????? ????? ??????? ??????.</p>
+                            </div>
+                        </div>
+                        <div class="about-feature-item">
+                            <div class="about-feature-icon">??</div>
+                            <div class="about-feature-text">
+                                <h4>????? ?? 58 ?????</h4>
+                                <p>???? ????? ????? ??????? ????? ?????? ??????? ?? ????? ??? ????????.</p>
+                            </div>
+                        </div>
+                        <div class="about-feature-item">
+                            <div class="about-feature-icon">??</div>
+                            <div class="about-feature-text">
+                                <h4>???? ????? ???</h4>
+                                <p>???? ??? ??? ???????? ?? ???????? ????? ????? ?????? ????????!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== WHY US - COMPACT ===== -->
+        <section class="why-section reveal-up">
+            <h2 class="section-title">????? ??????? ??? ?? ???? ????????</h2>
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-icon">??</div>
+                    <h3>?????? ?? ??????</h3>
+                    <p>?????? ?? ??????? ??????? ???????? ?????? ??? ????? ?? ???????? ?????</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">??</div>
+                    <h3>??? ?????? ???????</h3>
+                    <p>???? ????? ????? ??????????? ??????? ??? ??? ???? ?? ?????? ?????? ???????</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">??</div>
+                    <h3>????? ?????? ?????</h3>
+                    <p>???? ??????? ?? ?????? ????? ?????? ?????? ????? ????? ????????</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">??</div>
+                    <h3>???? ??? ???? ??????</h3>
+                    <p>????? ????? ????? ???? ?????? ??????? ????? ????? ??????? ????????</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LEAD MAGNET / WELCOME COUPON SECTION ===== -->
+        <section class="lead-magnet-section reveal-up" id="lead-magnet-section">
+            <div class="lead-magnet-grid">
+                <div class="lead-magnet-info">
+                    <span class="lead-magnet-badge">?? ???? ??????? ????</span>
+                    <h2 class="lead-magnet-title">???? ??? ????? ??? ????? 1000 ?? ???? ????!</h2>
+                    <p class="lead-magnet-desc">???? ????? ?????????? ?? ??? ????? ???? ???????? ?? ?????? ????????? ??????? ??? ????? ??? ????? ????? 1000 ?? ????? ????????? ?? ?? ???? ???? ????? ???.</p>
+                    
+                    <form class="lead-magnet-form" onsubmit="event.preventDefault(); handleLeadMagnetSubmit();">
+                        <input type="text" id="lead-magnet-contact" class="lead-magnet-input" placeholder="???? ????? ?????????? ?? ??? ?????..." required>
+                        <button type="submit" class="lead-magnet-btn">???? ??? ?????? ??</button>
+                    </form>
+                </div>
+                <div class="lead-magnet-visual">
+                    <div class="premium-ticket-coupon">
+                        <div class="ticket-dashed-line"></div>
+                        <div class="ticket-top">
+                            <span class="ticket-brand">LodeaLode.dz</span>
+                            <span class="ticket-badge">????? ????</span>
+                        </div>
+                        <div class="ticket-middle">
+                            <div class="ticket-value">1,000<small>??</small></div>
+                        </div>
+                        <div class="ticket-bottom">
+                            <span>??? ?????: <strong class="ticket-code-label">LODE-WELCOME</strong></span>
+                            <span>???? 100%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== LATEST BLOG ARTICLES ===== -->
+        <section class="blog-section reveal-up" id="blog-section">
+            <div class="section-header">
+                <h2 class="section-title">?? ???? ?????? ??????? ???????</h2>
+                <p class="section-sub">????? ????? ????? ??????? ????? ?? ???????</p>
+            </div>
+            <div class="blog-grid">
+                <div class="blog-card" onclick="window.open('https://lodealode.com/blog/group-buying-algeria', '_blank')">
+                    <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=400&q=80" alt="?????? ??????? ?? ???????" class="blog-img" loading="lazy">
+                    <div class="blog-body">
+                        <span class="blog-tag">???? ??????</span>
+                        <h3 class="blog-title">?? ?? ?????? ??????? ???? ???? ?? 40% ?? ????????</h3>
+                        <p class="blog-excerpt">???? ??? ????? ?????? ??????? ???? ???? ???? LodeaLode.dz ???????? ?? ??????? ?????? ?????? ????? ??????.</p>
+                    </div>
+                </div>
+                <div class="blog-card" onclick="window.open('https://lodealode.com/blog/trust-online-shopping', '_blank')">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1d704d3?auto=format&fit=crop&w=400&q=80" alt="?????? ?????????? ?????" class="blog-img" loading="lazy">
+                    <div class="blog-body">
+                        <span class="blog-tag">???? ????</span>
+                        <h3 class="blog-title">?????? ????? ???????? ??? ???????? ?? ??? 58 ?????</h3>
+                        <p class="blog-excerpt">??? ???? ????? ????? ????? ????? ?????? ?? ???? ????? ??? ???????? ???? ???? LodeaLode.dz ???? ??????? ????? 100%.</p>
+                    </div>
+                </div>
+                <div class="blog-card" onclick="window.open('https://lodealode.com/blog/tech-deals-buying', '_blank')">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=400&q=80" alt="??????? ??????????? ??????" class="blog-img" loading="lazy">
+                    <div class="blog-body">
+                        <span class="blog-tag">?????????</span>
+                        <h3 class="blog-title">???? ????? ??????? ???????? ?????? ?????? ??????</h3>
+                        <p class="blog-excerpt">??????? ????? ??????? ??????????? ??????? ?????? ??? ?????? ???? ????? ????? ??????? ??????? ???????.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== TESTIMONIALS - COMPACT ===== -->
+        <section class="testimonials-section reveal-up">
+            <h2 class="section-title">?? ????? ?????? ?? ???????</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="t-stars">?????</div>
+                    <p class="t-text">"????? ???? ?? 30,000 ?? ?????? ???????? ?? ?????. ??????? ??? ?????? ??????? ???? ?????? ?????."</p>
+                    <div class="t-author">
+                        <div class="t-avatar">?</div>
+                        <div>
+                            <div class="t-name">????? ?.</div>
+                            <div class="t-location">?? ???????</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card t-featured">
+                    <div class="t-stars">?????</div>
+                    <p class="t-text">"??? ?????? ?? ??????? ????? ????? ??????? ???????? ??? ??? ??? ????? ?????? ?? ???? ?????? ???? ?????? ?????????!"</p>
+                    <div class="t-author">
+                        <div class="t-avatar" style="background: linear-gradient(135deg, #f472b6, #a855f7);">?</div>
+                        <div>
+                            <div class="t-name">???? ?.</div>
+                            <div class="t-location">?? ??????? ???????</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="t-stars">?????</div>
+                    <p class="t-text">"?????? ??????! ?????? ??? ?????? ???? ????? ????? ????? ??????? ??????. ?????? ?????? ?? ???."</p>
+                    <div class="t-author">
+                        <div class="t-avatar" style="background: linear-gradient(135deg, #38bdf8, #818cf8);">?</div>
+                        <div>
+                            <div class="t-name">???? ?.</div>
+                            <div class="t-location">?? ?????</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div><!-- end page-wrapper -->
+
+    <!-- ===== PREMIUM FOOTER SECTION ===== -->
+    <footer class="premium-footer" id="premium-footer-section">
+        <div class="footer-container">
+            <div class="footer-column footer-logo-side">
+                <a href="#" class="logo" style="margin-bottom: 20px; display: inline-flex;">
+                    <img src="logo.png" alt="LodeaLode.dz" class="logo-img">
+                    <span class="logo-text">LodeaLode</span>
+                </a>
+                <p>???? ?????? ??????? ?????? ???????? ?? ??????? ???? ???? ?? ??? ???????? ???????? ???????? ?????? ?????? ??????? ?? ??? ??? ????? ????? ???????? ????? ??????? ???? 100%.</p>
+                <div class="footer-socials">
+                    <a href="#" class="footer-social-icon" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="footer-social-icon" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="footer-social-icon" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" class="footer-social-icon" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h4>????? ?????</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-left"></i> ????????</a></li>
+                    <li><a href="#products-section"><i class="fas fa-chevron-left"></i> ????? ????? ?????</a></li>
+                    <li><a href="#about-lodea-section"><i class="fas fa-chevron-left"></i> ?? ??? ???? ?????</a></li>
+                    <li><a href="#blog-section"><i class="fas fa-chevron-left"></i> ???? ?????? ????????</a></li>
+                    <li><a href="javascript:void(0)" onclick="openReferralModal()"><i class="fas fa-chevron-left"></i> ?????? ??????? ????????</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>????? ??????</h4>
+                <ul class="footer-links">
+                    <li><a href="rooms.html"><i class="fas fa-chevron-left"></i> ???? ?????? ???????</a></li>
+                    <li><a href="javascript:void(0)" onclick="showToast('????? ?????? ?????????? 100% ????? ??? ???? ???????!', 'success')"><i class="fas fa-chevron-left"></i> ???? ????????? 100%</a></li>
+                    <li><a href="javascript:void(0)" onclick="showToast('????? ??? ???????? ????? ?? ??? 58 ????? ????? ??????? ???????.', 'success')"><i class="fas fa-chevron-left"></i> ????? ??? ???????? ????</a></li>
+                    <li><a href="javascript:void(0)" onclick="showToast('???? ????????? ??????? ??????? ????? ????? ??????.', 'success')"><i class="fas fa-chevron-left"></i> ???? ????????? ?????????</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>???? ???</h4>
+                <div class="footer-contact-info">
+
+                    <div class="footer-contact-item">
+                        <i class="fas fa-envelope footer-contact-icon"></i>
+                        <div class="footer-contact-text">
+                            <h5>?????? ?????????? ?????</h5>
+                            <p><a href="mailto:support@lodealode.dz" style="color: #fff; text-decoration: none;">support@lodealode.dz</a></p>
+                        </div>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="fas fa-map-marker-alt footer-contact-icon"></i>
+                        <div class="footer-contact-text">
+                            <h5>????? ???????</h5>
+                            <p>??????? ???????? ??????? ????</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>???? ?????? ?????? � 2026 ????? LodeaLode.dz - ?????? ??????? ?????? ??????.</p>
+            <div class="footer-bottom-links">
+                <a href="javascript:void(0)" onclick="showToast('LodeaLode.dz ?? ????? ?????? ????? ?????? ???? ??????? ????????.', 'success')">????? ???????</a>
+                <span>.</span>
+                <a href="javascript:void(0)" onclick="showToast('??? ?????? ?????? ?? ??????? ???????? ???????? ?????? ????? ??????.', 'success')">???????? ?????</a>
+            </div>
+        </div>
+    </footer>
+    <!-- ===== AUTH MODAL ===== -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal-btn">&times;</span>
+            <h2 id="auth-title" class="section-title" style="margin-bottom: 1.5rem; font-size: 1.8rem; border: none;">????? ??????</h2>
+            <form id="auth-form" class="auth-form">
+                <div class="input-group">
+                    <label for="email">?????? ??????????</label>
+                    <input type="email" id="email" placeholder="example@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">???? ??????</label>
+                    <input type="password" id="password" placeholder="******" required minlength="6">
+                </div>
+                <button type="submit" class="auth-submit" id="auth-submit-btn">
+                    <span class="btn-text">????? ?????? ??????</span>
+                    <div class="btn-spinner hidden"></div>
+                </button>
+                <div id="auth-error" class="error-message hidden" style="color: #F87171; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+                <div id="auth-success" class="success-message hidden" style="color: #10B981; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+                <p class="auth-switch-text" style="text-align: center; margin-top: 1.5rem; color: #94A3B8;">
+                    <span id="auth-switch-msg">??? ???? ???? ????</span>
+                    <a href="#" id="auth-switch-link" style="color: var(--secondary); text-decoration: none; font-weight: bold;">???? ????? ??????? ????</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+        <!-- ===== CHECKOUT MODAL ===== -->
+    <div id="checkout-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" id="close-checkout-btn">&times;</span>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.8rem; border: none;">تأ�f�Sد ا�"ا�?ض�.ا�. �^حجز ا�"صف�,ة</h2>
+                <p style="color: #94A3B8; font-size: 0.9rem; margin-bottom: 0.8rem;">أ�?ت بصدد ا�"ا�?ض�.ا�. إ�"�? صف�,ة ا�"شراء ا�"ج�.اع�S �"�"ط�"ب:</p>
+                <div style="background: rgba(107, 47, 160, 0.05); padding: 0.8rem; border-radius: 12px; border: 1px solid rgba(107, 47, 160, 0.15);">
+                    <span id="display-product-name" style="color: var(--secondary); font-weight: 800; font-size: 1.15rem;">...</span>
+                </div>
+                
+                <div style="margin-top: 1rem; padding: 0.8rem; background: rgba(29, 184, 168, 0.08); border: 1px solid rgba(29, 184, 168, 0.2); border-radius: 8px; color: var(--success); font-size: 0.8rem; display: flex; align-items: center; gap: 10px; text-align: right;">
+                    <i class="fas fa-shield-alt" style="font-size: 1.5rem;"></i>
+                    <span><strong>ض�.ا�? استرداد أ�.�^ا�"�f 100%:</strong> حجز ا�"صف�,ة �Sتط�"ب ا�"دفع �"ض�.ا�? ا�"تزا�. ا�"�.شتر�f�S�?. إذا تراجعت أ�^ �"�. �Sعجب�f ا�"�.�?تج�O �S�.�f�?�f ط�"ب استرجاع أ�.�^ا�"�f ف�^را�< �^ب�f�" س�?�^�"ة!</span>
+                </div>
+            </div>
+            <form id="checkout-form" class="auth-form">
+                <input type="hidden" id="checkout-product-id">
+                <input type="hidden" id="checkout-product-name">
+                <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="first-name">ا�"اس�.</label>
+                        <input type="text" id="first-name" required placeholder="ا�"اس�. ا�"أ�^�"">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="last-name">ا�"�"�,ب</label>
+                        <input type="text" id="last-name" required placeholder="ا�"عائ�"ة">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="phone-number">ر�,�. ا�"�?اتف</label>
+                    <input type="tel" id="phone-number" required placeholder="05XX XX XX XX" dir="ltr" style="text-align: right;">
+                </div>
+                <div class="input-group">
+                    <label for="wilaya">ا�"�^�"ا�Sة (�.�?�. �"ت�?س�S�, ا�"ت�^ص�S�")</label>
+                    <select id="wilaya" required style="background: var(--bg-card); border: 1px solid var(--border-light); color: var(--text-main); padding: 0.75rem 1rem; border-radius: 10px; font-size: 1rem; outline: none; transition: border-color 0.3s ease; width: 100%;">
+                        <option value="" disabled selected>اختر ا�"�^�"ا�Sة...</option>
+                        <option value="أدرار">�Y?��Y?� 1. أدرار</option>
+                        <option value="ا�"ش�"ف">�Y?��Y?� 2. ا�"ش�"ف</option>
+                        <option value="ا�"أغ�^اط">�Y?��Y?� 3. ا�"أغ�^اط</option>
+                        <option value="أ�. ا�"ب�^ا�,�S">�Y?��Y?� 4. أ�. ا�"ب�^ا�,�S</option>
+                        <option value="بات�?ة">�Y?��Y?� 5. بات�?ة</option>
+                        <option value="بجا�Sة">�Y?��Y?� 6. بجا�Sة</option>
+                        <option value="بس�fرة">�Y?��Y?� 7. بس�fرة</option>
+                        <option value="بشار">�Y?��Y?� 8. بشار</option>
+                        <option value="ا�"ب�"�Sدة">�Y?��Y?� 9. ا�"ب�"�Sدة</option>
+                        <option value="ا�"ب�^�Sرة">�Y?��Y?� 10. ا�"ب�^�Sرة</option>
+                        <option value="ت�.�?راست">�Y?��Y?� 11. ت�.�?راست</option>
+                        <option value="تبسة">�Y?��Y?� 12. تبسة</option>
+                        <option value="ت�"�.سا�?">�Y?��Y?� 13. ت�"�.سا�?</option>
+                        <option value="ت�Sارت">�Y?��Y?� 14. ت�Sارت</option>
+                        <option value="ت�Sز�S �^ز�^">�Y?��Y?� 15. ت�Sز�S �^ز�^</option>
+                        <option value="ا�"جزائر ا�"عاص�.ة">�Y?��Y?� 16. ا�"جزائر ا�"عاص�.ة</option>
+                        <option value="ا�"ج�"فة">�Y?��Y?� 17. ا�"ج�"فة</option>
+                        <option value="ج�Sج�"">�Y?��Y?� 18. ج�Sج�"</option>
+                        <option value="سط�Sف">�Y?��Y?� 19. سط�Sف</option>
+                        <option value="سع�Sدة">�Y?��Y?� 20. سع�Sدة</option>
+                        <option value="س�f�S�fدة">�Y?��Y?� 21. س�f�S�fدة</option>
+                        <option value="س�Sد�S ب�"عباس">�Y?��Y?� 22. س�Sد�S ب�"عباس</option>
+                        <option value="ع�?ابة">�Y?��Y?� 23. ع�?ابة</option>
+                        <option value="�,ا�"�.ة">�Y?��Y?� 24. �,ا�"�.ة</option>
+                        <option value="�,س�?ط�S�?ة">�Y?��Y?� 25. �,س�?ط�S�?ة</option>
+                        <option value="ا�"�.د�Sة">�Y?��Y?� 26. ا�"�.د�Sة</option>
+                        <option value="�.ستغا�?�.">�Y?��Y?� 27. �.ستغا�?�.</option>
+                        <option value="ا�"�.س�S�"ة">�Y?��Y?� 28. ا�"�.س�S�"ة</option>
+                        <option value="�.عس�fر">�Y?��Y?� 29. �.عس�fر</option>
+                        <option value="�^ر�,�"ة">�Y?��Y?� 30. �^ر�,�"ة</option>
+                        <option value="�^�?را�?">�Y?��Y?� 31. �^�?را�?</option>
+                        <option value="ا�"ب�Sض">�Y?��Y?� 32. ا�"ب�Sض</option>
+                        <option value="إ�"�Sز�S">�Y?��Y?� 33. إ�"�Sز�S</option>
+                        <option value="برج ب�^عر�Sر�Sج">�Y?��Y?� 34. برج ب�^عر�Sر�Sج</option>
+                        <option value="ب�^�.رداس">�Y?��Y?� 35. ب�^�.رداس</option>
+                        <option value="ا�"طارف">�Y?��Y?� 36. ا�"طارف</option>
+                        <option value="ت�?د�^ف">�Y?��Y?� 37. ت�?د�^ف</option>
+                        <option value="ت�Sس�.س�S�"ت">�Y?��Y?� 38. ت�Sس�.س�S�"ت</option>
+                        <option value="ا�"�^اد�S">�Y?��Y?� 39. ا�"�^اد�S</option>
+                        <option value="خ�?ش�"ة">�Y?��Y?� 40. خ�?ش�"ة</option>
+                        <option value="س�^�, أ�?راس">�Y?��Y?� 41. س�^�, أ�?راس</option>
+                        <option value="ت�Sبازة">�Y?��Y?� 42. ت�Sبازة</option>
+                        <option value="�.�S�"ة">�Y?��Y?� 43. �.�S�"ة</option>
+                        <option value="ع�S�? ا�"دف�"�?">�Y?��Y?� 44. ع�S�? ا�"دف�"�?</option>
+                        <option value="ا�"�?عا�.ة">�Y?��Y?� 45. ا�"�?عا�.ة</option>
+                        <option value="ع�S�? ت�.�^ش�?ت">�Y?��Y?� 46. ع�S�? ت�.�^ش�?ت</option>
+                        <option value="غردا�Sة">�Y?��Y?� 47. غردا�Sة</option>
+                        <option value="غ�"�Sزا�?">�Y?��Y?� 48. غ�"�Sزا�?</option>
+                        <option value="ا�"�.غ�Sر">�Y?��Y?� 49. ا�"�.غ�Sر</option>
+                        <option value="ا�"�.�?�Sعة">�Y?��Y?� 50. ا�"�.�?�Sعة</option>
+                        <option value="أ�^�"اد ج�"ا�"">�Y?��Y?� 51. أ�^�"اد ج�"ا�"</option>
+                        <option value="برج باج�S �.ختار">�Y?��Y?� 52. برج باج�S �.ختار</option>
+                        <option value="ب�?�S عباس">�Y?��Y?� 53. ب�?�S عباس</option>
+                        <option value="ت�S�.�S�.�^�?">�Y?��Y?� 54. ت�S�.�S�.�^�?</option>
+                        <option value="ت�,رت">�Y?��Y?� 55. ت�,رت</option>
+                        <option value="جا�?ت">�Y?��Y?� 56. جا�?ت</option>
+                        <option value="إ�? صا�"ح">�Y?��Y?� 57. إ�? صا�"ح</option>
+                        <option value="إ�? �,زا�.">�Y?��Y?� 58. إ�? �,زا�.</option>
+                    </select>
+                </div>
+                <button type="submit" class="auth-submit" id="checkout-submit-btn" style="background: linear-gradient(135deg, var(--secondary), var(--primary-dark)); color: white; margin-top: 1.5rem;">
+                    <span class="btn-text">تأ�f�Sد حجز ا�"صف�,ة �^ا�"ط�"ب</span>
+                    <div class="btn-spinner hidden"></div>
+                </button>
+                <div id="checkout-error" class="error-message hidden" style="color: #F87171; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+                <div id="checkout-success" class="success-message hidden" style="color: #10B981; text-align: center; margin-top: 1rem; font-size: 0.9rem;"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== REFERRAL MODAL ===== -->
+    <div id="referral-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 480px; text-align: center;">
+            <span class="close-modal" onclick="closeReferralModal()">&times;</span>
+            <div style="font-size: 3.5rem; margin-bottom: 1.5rem; filter: drop-shadow(0 0 10px var(--secondary));">�YZ�</div>
+            <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.8rem; border: none; text-align: center;">بر�?ا�.ج ا�"إحا�"ة ا�"ف�Sر�^س�S</h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;">
+                شار�f �f�^د ا�"إحا�"ة ا�"خاص ب�f �.ع أصد�,ائ�f! ع�?د ا�?ض�.ا�. صد�S�, �"أ�S صف�,ة�O ستحص�" أ�?ت �^�?�^ ع�"�? **�f�^ب�^�? خص�. إضاف�S ب�,�S�.ة 1000 دج** �^�?�,اط خبرة +100 XP!
+            </p>
+            
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1.5px dashed var(--secondary); padding: 15px; border-radius: var(--radius-sm); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+                <span id="user-ref-code" style="font-family: monospace; font-size: 1.4rem; font-weight: 900; color: var(--secondary); letter-spacing: 2px;">LODE-USER-77</span>
+                <button class="btn-solid" style="padding: 8px 16px; font-size: 0.85rem;" onclick="copyReferralCode()">�?سخ ا�"�f�^د</button>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn-solid" style="background: #1877F2; box-shadow: 0 4px 15px rgba(24,119,242,0.3);" onclick="shareReferral('facebook')"><i class="fab fa-facebook-f"></i> ف�Sسب�^�f</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ORDERS MODAL ===== -->
+    <div id="orders-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 700px; width: 95%;">
+            <span class="close-modal" id="close-orders-btn">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 2rem; font-size: 1.8rem; border: none; text-align: center;">�Y"� صف�,ات�S �^ط�"بات�S ا�"ساب�,ة</h2>
+            <div id="orders-loading" class="hidden" style="text-align: center; padding: 2rem;">
+                <div class="spinner" style="width: 30px; height: 30px; margin: 0 auto;"></div>
+                <p style="color: var(--text-muted); margin-top: 10px;">جار�S تح�.�S�" ط�"بات�f �.�? ا�"س�Sرفر...</p>
+            </div>
+            <div id="orders-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: 60vh; overflow-y: auto; padding: 0.5rem;"></div>
+            <div id="orders-empty" class="hidden" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                <p>�"�. ت�,�. با�"ا�?ض�.ا�. �"أ�S صف�,ة حت�? ا�"آ�?.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MOBILE ACCOUNT MODAL ===== -->
+    <div id="mobile-account-modal" class="modal hidden">
+        <div class="modal-content" style="text-align: center; max-width: 350px;">
+            <span class="close-modal" id="close-mobile-account-btn">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 1.5rem; font-size: 1.5rem; border: none;">�Y'� إدارة حساب�S</h2>
+            <p id="mobile-user-email" style="margin-bottom: 1.5rem; color: var(--text-muted); font-size: 0.9rem;"></p>
+            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                <button class="btn-solid" onclick="openReferralModal()" style="background: var(--secondary, #7C3AED); color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-shadow: 0 4px 15px rgba(107, 47, 160, 0.2);">
+                    <i class="fas fa-gift" style="font-size: 1.1rem;"></i>
+                    بر�?ا�.ج ا�"إحا�"ة �^ا�"ج�^ائز
+                </button>
+                <a href="settings.html" class="btn-solid" style="background: var(--secondary, #7C3AED); color: #fff; border: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-shadow: 0 4px 15px rgba(107, 47, 160, 0.2);">
+                    <i class="fas fa-cog" style="font-size: 1.1rem;"></i>
+                    إعدادات ا�"حساب
+                </a>
+                <a href="super-admin.html" id="mobile-super-admin-btn" class="action-btn hidden" style="background: rgba(239, 68, 68, 0.1); border: 1.5px solid #EF4444; color: #EF4444; text-decoration: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                    <i class="fas fa-shield-alt" style="font-size: 1.1rem;"></i>
+                    إدارة ا�"�f�Sا�? ا�"ع�"�Sا
+                </a>
+                <a href="admin.html" id="mobile-admin-btn" class="action-btn hidden" style="background: rgba(45, 212, 191, 0.1); border: 1.5px solid #2DD4BF; color: #2DD4BF; text-decoration: none; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                    <i class="fas fa-cog" style="font-size: 1.1rem;"></i>
+                    �"�^حة تح�f�. ا�"صف�,ات
+                </a>
+                <button id="mobile-logout-btn" class="btn-ghost" style="background: #1e293b; color: #ffffff; border: 1.5px solid #334155; padding: 14px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                    تسج�S�" ا�"خر�^ج ا�"آ�.�?
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TICKET SHARE MODAL ===== -->
+    <div id="ticket-share-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <span class="close-modal" onclick="closeTicketModal()">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.8rem; border: none;">?? ????? ?????? ???????</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">???? ?????? ?????? ????? ??????? ???????? ??? ??????? ???? ??????!</p>
+            
+            <div id="ticket-capture-zone" class="ticket-wrapper">
+                <div class="ticket-header">
+                    <span style="font-weight: 900; color: var(--primary);">LODEALODE.DZ TICKET</span>
+                    <span style="font-weight: 800; color: var(--secondary);">???? ?????? ????</span>
+                </div>
+                <div class="ticket-body">
+                    <img id="ticket-product-img" src="logo.png" alt="product" class="ticket-img">
+                    <div class="ticket-info">
+                        <h4 id="ticket-product-title" style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">...</h4>
+                        <p style="font-size: 0.8rem; color: var(--success); font-weight: 800;"><span id="ticket-buyers-joined">0</span> ????? ?????? ??????</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">???? <span id="ticket-buyers-needed">0</span> ??? ??????? ?????? ???? ????? ??????!</p>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+                    <div>??? ???????: <strong id="ticket-code" style="color: var(--accent-gold);">#LODE-9921</strong></div>
+                    <div>??? ??????: <strong id="ticket-price" style="color: var(--secondary);">... ??</strong></div>
+                </div>
+            </div>
+            
+            <button class="btn-solid" style="width: 100%; margin-bottom: 12px;" onclick="downloadTicketImage()"><i class="fas fa-download"></i> ????? ??????? ????? ????????</button>
+            <button class="btn-ghost" style="width: 100%;" onclick="copyTicketLink()"><i class="fas fa-copy"></i> ??? ???? ?????? ???????</button>
+        </div>
+    </div>
+
+    <!-- ===== NOTIFICATIONS DRAWER ===== -->
+    <div id="notifications-drawer" class="modal hidden" style="justify-content: flex-start;">
+        <div class="modal-content" style="max-width: 360px; height: 100vh; margin: 0 0 0 auto; border-radius: 0; border-left: 1.5px solid var(--border-glow); display: flex; flex-direction: column;">
+            <span class="close-modal" onclick="toggleNotificationsDrawer()">&times;</span>
+            <h2 class="section-title" style="margin-top: 1.5rem; margin-bottom: 2rem; font-size: 1.6rem; border: none; text-align: right;">?? ????????? ????????</h2>
+            <div id="notifications-list" style="display: flex; flex-direction: column; gap: 15px; flex: 1; overflow-y: auto;">
+                <div class="order-card-premium" style="border-left: 4px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 5px;">?? ???? Streak ??????!</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">??? ?????? ???? ?????? ??? ?????? ?? 3 ???? ???? +50 XP ??????.</p>
+                </div>
+                <div class="order-card-premium" style="border-left: 4px solid var(--secondary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 5px;">?? ???? ????? ?????</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">?????? AirPods Pro 2 ????? ????? ?????? ??????? ?????? ?? ???? 20:00.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===== SOCIAL PROOF ===== -->
+    <div id="social-proof" class="social-proof hidden">
+        <div class="sp-icon">??</div>
+        <div class="sp-content">
+            <div class="sp-user" id="sp-user">??? ?? ?? ?????</div>
+            <div class="sp-action">???? ???? ????? <span id="sp-product">...</span></div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ===== WORKFLOW SLIDER JS ===== -->
+    <script>
+        const workflowSteps = [
+            {
+                title: "1?? ???????: ????? ???? ?????",
+                desc: "???? ???? ??? ????? (????? ?????? MacBook Air ???? 209,000 ??) ??? ???? ????? ????? ???? ???? ??? ????? ????? ????.",
+                icon: "fa-sad-tear",
+                color: "#EF4444"
+            },
+            {
+                title: "2?? ???? ?????: ????? ????? ???",
+                desc: "????? ?????? ???? ???? lodealode.com ??????: ??? ??? ?????? ??? ????? ?? ??? ???? ??????!",
+                icon: "fa-share-alt",
+                color: "#3B82F6"
+            },
+            {
+                title: "3?? ????? LDL: ????? ?????? ???????",
+                desc: "???? ?????? ?????? ???? ?????? ?????? ???? ???? ????? (????? 159,000 ??) ???? ??? ?? 24%!",
+                icon: "fa-search-dollar",
+                color: "#10B981"
+            },
+            {
+                title: "4?? ???? ??????: ????? ?? ????? ??? ????",
+                desc: "???? ??? '???? ?????? ????' ????? ??????? ??? ????? ????? ??? ???? ????? ????? ????? ????????.",
+                icon: "fa-mouse-pointer",
+                color: "#8B5CF6"
+            },
+            {
+                title: "5?? ???? ????????: ???? ?? ???????",
+                desc: "????? ???? ?????? ?? ?????? ???????? ??? ??????? ?????? ?? ?????? ??? ????? ????? ??????? ?????.",
+                icon: "fa-users",
+                color: "#EC4899"
+            },
+            {
+                title: "6?? ????? ?????? ??????: ????? ?????",
+                desc: "???? ???? ?????? ??? ?????? (????? ????? ?? 128 / 200 ?????). ?? ?? ???? ????? ????? ????? ???? ??????!",
+                icon: "fa-spinner fa-spin",
+                color: "#F59E0B"
+            },
+            {
+                title: "7?? ?????? ??????!: ????? ????? ????",
+                desc: "?????! ????? ????? ??????? (????? 200 ?????) ???? ????? ????? ?????? ??????? 159,000 ?? ?????? ?????.",
+                icon: "fa-check-circle",
+                color: "#10B981"
+            },
+            {
+                title: "8?? ?????? ?????: ??????? ?????? ??? ????????",
+                desc: "????? ????? ??????? ?????? ????? ??? ???? ?? ?? ????? ?? ???????? ??? 58. ???? ????? ????? ??? ????????!",
+                icon: "fa-truck",
+                color: "#6D28D9"
+            },
+            {
+                title: "9?? ????? ??? ????: ??????? ??????? ???????",
+                desc: "????? ?????? MacBook Air ?????? ????? ??????? ???????? ?????? ???? ?????? ?? ??? ???? ?????? ??????? ???!",
+                icon: "fa-laugh-beam",
+                color: "#10B981"
+            }
+        ];
+
+        let currentWorkflowStep = 0;
+        let workflowAutoPlayInterval = null;
+        let isWorkflowPlaying = true;
+
+        function updateWorkflowUI() {
+            const step = workflowSteps[currentWorkflowStep];
+            const badge = document.getElementById('workflow-step-badge');
+            const iconWrap = document.getElementById('workflow-icon-wrap');
+            const title = document.getElementById('workflow-step-title');
+            const desc = document.getElementById('workflow-step-desc');
+            const fill = document.getElementById('workflow-progress-fill');
+            const card = document.getElementById('workflow-card');
+            
+            if (!badge || !iconWrap || !title || !desc || !fill) return;
+            
+            // Apply fade-out
+            const content = document.querySelector('.workflow-step-content');
+            if (content) {
+                content.style.opacity = 0;
+                content.style.transform = 'translateY(10px)';
+                content.style.transition = 'all 0.3s ease';
+            }
+            if (card) {
+                card.style.opacity = 0.85;
+                card.style.transition = 'all 0.3s ease';
+            }
+            
+            setTimeout(() => {
+                badge.textContent = `\u0627\u0644\u062e\u0637\u0648\u0629 ${currentWorkflowStep + 1} \u0645\u0646 9`;
+                iconWrap.innerHTML = `<i class="fas ${step.icon}"></i>`;
+                iconWrap.style.color = step.color;
+                iconWrap.style.borderColor = step.color + '20';
+                title.textContent = step.title;
+                desc.textContent = step.desc;
+                fill.style.width = `${((currentWorkflowStep + 1) / 9) * 100}%`;
+                
+                if (card) {
+                    card.style.backgroundImage = `var(--workflow-overlay), url('assets/workflow/step${currentWorkflowStep + 1}.png')`;
+                    card.style.opacity = 1;
+                }
+                
+                // Apply fade-in
+                if (content) {
+                    content.style.opacity = 1;
+                    content.style.transform = 'translateY(0)';
+                }
+            }, 300);
+        }
+
+        function nextWorkflowStep() {
+            currentWorkflowStep = (currentWorkflowStep + 1) % workflowSteps.length;
+            updateWorkflowUI();
+        }
+
+        function prevWorkflowStep() {
+            currentWorkflowStep = (currentWorkflowStep - 1 + workflowSteps.length) % workflowSteps.length;
+            updateWorkflowUI();
+        }
+
+        function toggleWorkflowAutoPlay() {
+            const btn = document.getElementById('workflow-play-btn');
+            if (isWorkflowPlaying) {
+                clearInterval(workflowAutoPlayInterval);
+                isWorkflowPlaying = false;
+                if (btn) btn.innerHTML = '<i class="fas fa-play"></i>';
+            } else {
+                startWorkflowAutoPlay();
+                isWorkflowPlaying = true;
+                if (btn) btn.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        }
+
+        function startWorkflowAutoPlay() {
+            clearInterval(workflowAutoPlayInterval);
+            workflowAutoPlayInterval = setInterval(() => {
+                nextWorkflowStep();
+            }, 4500);
+        }
+
+        function openInfographicModal() {
+            const modal = document.getElementById('infographic-modal');
+            if (modal) modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            resetLightboxZoom();
+        }
+
+        function closeInfographicModal(event) {
+            const modal = document.getElementById('infographic-modal');
+            if (!modal) return;
+            if (event.target.id === 'infographic-modal' || event.target.classList.contains('lightbox-close') || event.target.tagName === 'SPAN') {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                resetLightboxZoom();
+            }
+        }
+
+        function toggleLightboxZoom(event) {
+            if (event) event.stopPropagation();
+            const img = document.getElementById('lightbox-main-img');
+            const btn = document.getElementById('lightbox-zoom-btn');
+            if (!img) return;
+            
+            if (img.classList.contains('zoomed')) {
+                img.classList.remove('zoomed');
+                if (btn) btn.innerHTML = '<i class="fas fa-search-plus"></i> ????? ??????';
+            } else {
+                img.classList.add('zoomed');
+                if (btn) btn.innerHTML = '<i class="fas fa-search-minus"></i> ????? ??????';
+            }
+        }
+
+        function resetLightboxZoom() {
+            const img = document.getElementById('lightbox-main-img');
+            const btn = document.getElementById('lightbox-zoom-btn');
+            if (img) img.classList.remove('zoomed');
+            if (btn) btn.innerHTML = '<i class="fas fa-search-plus"></i> ????? ??????';
+        }
+
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateWorkflowUI();
+            startWorkflowAutoPlay();
+        });
+    </script>
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <a href="index.html" class="nav-item active" id="nav-home">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-label">????????</span>
+        </a>
+        <a href="rooms.html" class="nav-item" id="nav-rooms">
+            <i class="fas fa-shopping-cart nav-icon"></i>
+            <span class="nav-label">????</span>
+        </a>
+        <a href="community.html" class="nav-item" id="nav-community">
+            <i class="fas fa-comments nav-icon"></i>
+            <span class="nav-label">???????</span>
+        </a>
+        <a href="products.html" class="nav-item" id="nav-products">
+            <i class="fas fa-shopping-bag nav-icon"></i>
+            <span class="nav-label">????????</span>
+        </a>
+        <a href="settings.html" class="nav-item" id="nav-settings">
+            <i class="far fa-user nav-icon"></i>
+            <span class="nav-label">?????</span>
+        </a>
+    </nav>
+</body>
+</html>

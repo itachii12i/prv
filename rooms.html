@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <script>
+        (function(){
+            try {
+                if (localStorage.getItem('theme') === 'dark') {
+                    document.documentElement.classList.add('dark-mode');
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.body.classList.add('dark-mode');
+                    });
+                }
+            } catch(e) {}
+        })();
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#6B2FA0">
+    <title>غرفي - LodeaLode</title>
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="mobile.css">
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="auth.js"></script>
+    <script src="rooms.js" defer></script>
+    <script src="mobile.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* CSS Specific to Rooms Page */
+        .rooms-page-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Top Header Area */
+        .rooms-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+        .rooms-header .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .rooms-header .logo-section img {
+            height: 32px;
+            object-fit: contain;
+        }
+        .rooms-header .logo-section span {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        .rooms-header .title-section {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-on-light);
+        }
+        body.dark-mode .rooms-header .title-section {
+            color: #fff;
+        }
+        .rooms-header .noti-section {
+            position: relative;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(var(--primary-rgb), 0.08);
+            color: var(--primary);
+            font-size: 1.15rem;
+        }
+        .rooms-header .noti-section .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: #6D28D9;
+            border-radius: 50%;
+        }
+
+        /* Search input bar */
+        .rooms-search-box {
+            position: relative;
+            width: 100%;
+        }
+        .rooms-search-box input {
+            width: 100%;
+            padding: 12px 42px 12px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(var(--primary-rgb), 0.15);
+            background: #F3F4F6;
+            color: #1a1033;
+            font-size: 0.95rem;
+            outline: none;
+            text-align: right;
+            transition: all 0.25s;
+        }
+        body.dark-mode .rooms-search-box input {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .rooms-search-box input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 10px rgba(var(--primary-rgb), 0.1);
+        }
+        body.dark-mode .rooms-search-box input:focus {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .rooms-search-box i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+        }
+
+        /* Categories tabs */
+        .rooms-filter-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .rooms-filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .rooms-tab-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #F3F4F6;
+            border: none;
+            color: #4B5563;
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        body.dark-mode .rooms-tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #9CA3AF;
+        }
+        .rooms-tab-btn.active {
+            background: #6D28D9;
+            color: #fff !important;
+        }
+        .rooms-tab-btn .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .rooms-tab-btn .dot.active-dot { background: #10B981; }
+        .rooms-tab-btn .dot.completed-dot { background: #3B82F6; }
+        .rooms-tab-btn .dot.pending-dot { background: #F59E0B; }
+
+        /* Stats Section */
+        .rooms-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .rooms-stat-card {
+            background: #F9FAFB;
+            border: 1px solid rgba(var(--primary-rgb), 0.08);
+            border-radius: 18px;
+            padding: 12px 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        body.dark-mode .rooms-stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .rooms-stat-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            color: #fff;
+        }
+        .rooms-stat-icon.icon-active { background: #6D28D9; }
+        .rooms-stat-icon.icon-completed { background: #10B981; }
+        .rooms-stat-icon.icon-shipping { background: #4F46E5; }
+        .rooms-stat-label {
+            font-size: 0.72rem;
+            color: #6B7280;
+            font-weight: 700;
+        }
+        body.dark-mode .rooms-stat-label {
+            color: #9CA3AF;
+        }
+        .rooms-stat-value {
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+        .rooms-stat-value.val-active { color: #6D28D9; }
+        .rooms-stat-value.val-completed { color: #10B981; }
+        .rooms-stat-value.val-shipping { color: #4F46E5; }
+
+        /* Rooms list cards */
+        .rooms-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .room-card {
+            background: #fff;
+            border: 1px solid rgba(var(--primary-rgb), 0.1);
+            border-radius: 20px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            position: relative;
+        }
+        body.dark-mode .room-card {
+            background: #1a1033;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .room-card-main {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .room-card-img-wrap {
+            width: 75px;
+            height: 75px;
+            border-radius: 12px;
+            background: #F9FAFB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid #E5E7EB;
+        }
+        body.dark-mode .room-card-img-wrap {
+            background: rgba(255,255,255,0.02);
+            border-color: rgba(255,255,255,0.05);
+        }
+        .room-card-img-wrap img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        .room-card-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+        .room-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .room-card-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-on-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        body.dark-mode .room-card-title {
+            color: #fff;
+        }
+        .room-status-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .room-status-badge.status-active { background: #ECFDF5; color: #059669; }
+        .room-status-badge.status-completed { background: #EFF6FF; color: #2563EB; }
+        .room-status-badge.status-shipping { background: #F5F3FF; color: #4F46E5; }
+        .room-status-badge.status-pending { background: #FFFBEB; color: #D97706; }
+        
+        .room-status-badge .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .room-status-badge.status-active .badge-dot { background: #10B981; }
+        .room-status-badge.status-completed .badge-dot { background: #3B82F6; }
+        .room-status-badge.status-shipping .badge-dot { background: #4F46E5; }
+        .room-status-badge.status-pending .badge-dot { background: #F59E0B; }
+
+        .room-card-price {
+            font-size: 1.15rem;
+            font-weight: 900;
+            color: #4F46E5;
+        }
+        body.dark-mode .room-card-price {
+            color: var(--secondary-light);
+        }
+        
+        .room-card-buyers {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            color: #6B7280;
+            font-weight: 700;
+        }
+        body.dark-mode .room-card-buyers {
+            color: #9CA3AF;
+        }
+
+        .room-card-progress {
+            margin-top: 4px;
+        }
+        .room-progress-track {
+            height: 6px;
+            background: #E5E7EB;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        body.dark-mode .room-progress-track {
+            background: rgba(255,255,255,0.08);
+        }
+        .room-progress-fill {
+            height: 100%;
+            background: #10B981;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .room-card-subtext {
+            font-size: 0.72rem;
+            color: #6B7280;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        body.dark-mode .room-card-subtext {
+            color: #9CA3AF;
+        }
+
+        .room-card-arrow {
+            display: flex;
+            align-items: center;
+            align-self: center;
+            padding-right: 8px;
+            color: #9CA3AF;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .room-card-actions {
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #F3F4F6;
+            padding-top: 10px;
+        }
+        body.dark-mode .room-card-actions {
+            border-color: rgba(255,255,255,0.05);
+        }
+        .room-action-btn {
+            flex: 1;
+            min-height: 40px !important;
+            padding: 8px 12px;
+            font-size: 0.82rem !important;
+            border-radius: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .room-action-btn.btn-outline {
+            background: transparent;
+            border: 1px solid #D1D5DB;
+            color: #374151;
+        }
+        body.dark-mode .room-action-btn.btn-outline {
+            border-color: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+        .room-action-btn.btn-solid {
+            background: #6D28D9;
+            color: #fff;
+        }
+        .room-action-btn.btn-solid:hover {
+            background: #5B21B6;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Empty states */
+        .rooms-empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6B7280;
+        }
+        .rooms-empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+        .rooms-empty-state h3 {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: var(--text-on-light);
+        }
+        body.dark-mode .rooms-empty-state h3 {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body class="is-mobile">
+    <!-- Background Watermark -->
+    <div class="watermark-bg"></div>
+
+    <!-- ===== MAIN WRAPPER ===== -->
+    <div class="rooms-page-container">
+        
+        <!-- ===== HEADER ===== -->
+        <header class="rooms-header">
+            <div class="logo-section">
+                <img src="logo.png" alt="LodeaLode" onerror="this.style.display='none'">
+                <span>LodeaLode</span>
+            </div>
+            <div class="title-section">غرفي</div>
+            <div class="noti-section" onclick="toggleNotificationsDrawer()">
+                <i class="far fa-bell"></i>
+                <div class="badge" id="rooms-noti-badge" style="display: none;"></div>
+            </div>
+        </header>
+
+        <!-- ===== SEARCH BAR ===== -->
+        <div class="rooms-search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="rooms-search-input" placeholder="ابحث عن غرفة أو منتج...">
+        </div>
+
+        <!-- ===== FILTER CATEGORIES ===== -->
+        <div class="rooms-filter-tabs" id="rooms-filter-tabs">
+            <button class="rooms-tab-btn active" data-status="all">الكل</button>
+            <button class="rooms-tab-btn" data-status="نشطة">
+                <span class="dot active-dot"></span> نشطة
+            </button>
+            <button class="rooms-tab-btn" data-status="مكتملة">
+                <span class="dot completed-dot"></span> مكتملة
+            </button>
+            <button class="rooms-tab-btn" data-status="بانتظار التأكيد">
+                <span class="dot pending-dot"></span> بانتظار التأكيد
+            </button>
+        </div>
+
+        <!-- ===== SUMMARY CARDS ===== -->
+        <section class="rooms-stats-grid">
+            <div class="rooms-stat-card">
+                <div class="rooms-stat-icon icon-active">
+                    <i class="fas fa-users"></i>
+                </div>
+                <span class="rooms-stat-label">الغرف النشطة</span>
+                <span class="rooms-stat-value val-active" id="stat-active-count">0</span>
+            </div>
+            <div class="rooms-stat-card">
+                <div class="rooms-stat-icon icon-completed">
+                    <i class="fas fa-check"></i>
+                </div>
+                <span class="rooms-stat-label">المكتملة</span>
+                <span class="rooms-stat-value val-completed" id="stat-completed-count">0</span>
+            </div>
+            <div class="rooms-stat-card">
+                <div class="rooms-stat-icon icon-shipping">
+                    <i class="fas fa-truck"></i>
+                </div>
+                <span class="rooms-stat-label">قيد الشحن</span>
+                <span class="rooms-stat-value val-shipping" id="stat-shipping-count">0</span>
+            </div>
+        </section>
+
+        <!-- ===== ROOMS LIST ===== -->
+        <main class="rooms-list" id="rooms-list-container">
+            <div class="rooms-empty-state" id="rooms-loading-state">
+                <i class="fas fa-circle-notch fa-spin"></i>
+                <h3>جاري تحميل الغرف...</h3>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- ===== NOTIFICATIONS DRAWER ===== -->
+    <div id="notifications-drawer" class="modal hidden" style="justify-content: flex-start;">
+        <div class="modal-content" style="max-width: 360px; height: 100vh; margin: 0 0 0 auto; border-radius: 0; border-left: 1.5px solid var(--border-glow); display: flex; flex-direction: column;">
+            <span class="close-modal" onclick="toggleNotificationsDrawer()">&times;</span>
+            <h2 class="section-title" style="margin-top: 1.5rem; margin-bottom: 2rem; font-size: 1.6rem; border: none; text-align: right;">🔔 التنبيهات والجوائز</h2>
+            <div id="notifications-list" style="display: flex; flex-direction: column; gap: 15px; flex: 1; overflow-y: auto;">
+                <div class="order-card-premium" style="border-left: 4px solid var(--accent-gold);">
+                    <h4 style="color: var(--accent-gold); margin-bottom: 5px;">🔥 هدية Streak اليومي!</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">سجل الدخول غداً للحفاظ على تتابعك لـ 3 أيام وكسب +50 XP إضافية.</p>
+                </div>
+                <div class="order-card-premium" style="border-left: 4px solid var(--secondary);">
+                    <h4 style="color: var(--secondary); margin-bottom: 5px;">📦 صفقة جديدة قادمة</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">سماعات AirPods Pro 2 ستكون متاحة للشراء الجماعي الليلة في تمام 20:00.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ===== TICKET SHARE MODAL ===== -->
+    <div id="ticket-share-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px; text-align: center;">
+            <span class="close-modal" onclick="closeTicketModal()">&times;</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem; font-size: 1.8rem; border: none;">🎫 تذكرة الشراء الجماعي</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">شارك تذكرتك الفخمة لتدعو أصدقائك للانضمام معك واكتساب نقاط إضافية!</p>
+            
+            <div id="ticket-capture-zone" class="ticket-wrapper">
+                <div class="ticket-header">
+                    <span style="font-weight: 900; color: var(--primary);">LODEALODE.DZ TICKET</span>
+                    <span style="font-weight: 800; color: var(--secondary);">صفقة جماعية 🇩🇿</span>
+                </div>
+                <div class="ticket-body">
+                    <img id="ticket-product-img" src="logo.png" alt="product" class="ticket-img">
+                    <div class="ticket-info">
+                        <h4 id="ticket-product-title" style="font-size: 1.1rem; color: #fff; margin-bottom: 5px;">...</h4>
+                        <p style="font-size: 0.8rem; color: var(--success); font-weight: 800;"><span id="ticket-buyers-joined">0</span> مشترك انضموا بالفعل</p>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;">باقي <span id="ticket-buyers-needed">0</span> فقط لاكتمال الصفقة ونشر السعر المخفض!</p>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+                    <div>كود التذكرة: <strong id="ticket-code" style="color: var(--accent-gold);">#LODE-9921</strong></div>
+                    <div>سعر الشراء: <strong id="ticket-price" style="color: var(--secondary);">... دج</strong></div>
+                </div>
+            </div>
+            
+            <button class="btn-solid" style="width: 100%; margin-bottom: 12px;" onclick="downloadTicketImage()"><i class="fas fa-download"></i> تنزيل التذكرة كصورة سينمائية</button>
+            <button class="btn-ghost" style="width: 100%;" onclick="copyTicketLink()"><i class="fas fa-copy"></i> نسخ رابط الشراء المباشر</button>
+        </div>
+    </div>
+
+    <!-- We load script.js for sharing ticket capabilities and Toast helpers -->
+    <script src="index.js"></script>
+    <!-- ===== MOBILE BOTTOM NAVIGATION ===== -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+        <a href="index.html" class="nav-item" id="nav-home">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-label">الرئيسية</span>
+        </a>
+        <a href="rooms.html" class="nav-item active" id="nav-rooms">
+            <i class="fas fa-shopping-cart nav-icon"></i>
+            <span class="nav-label">غرفي</span>
+        </a>
+        <a href="community.html" class="nav-item" id="nav-community">
+            <i class="fas fa-comments nav-icon"></i>
+            <span class="nav-label">المجتمع</span>
+        </a>
+        <a href="products.html" class="nav-item" id="nav-products">
+            <i class="fas fa-shopping-bag nav-icon"></i>
+            <span class="nav-label">المنتجات</span>
+        </a>
+        <a href="settings.html" class="nav-item" id="nav-settings">
+            <i class="far fa-user nav-icon"></i>
+            <span class="nav-label">حسابي</span>
+        </a>
+    </nav>
+</body>
+
+</html>

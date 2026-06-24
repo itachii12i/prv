@@ -1,0 +1,1004 @@
+const SUPABASE_URL = 'https://xhjyszxrnkqolrynsffi.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_vIx5AuAzJ_4BkFOx1E0gyg_Xf0B0e5C';
+
+// Initialize Supabase client
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ADMIN CONFIGURATION
+const SUPER_ADMIN_EMAILS = ['ahmedmalekmohamedelamine@gmail.com'];
+
+// --- AUTH LOGIC START ---
+let isLoginMode = true;
+
+// GLOBAL STATE
+let productsCache = [];
+
+// DOM Elements
+let loginBtn, logoutBtn, userInfo, userEmailSpan, adminPanelBtn, superAdminPanelBtn;
+let authModal, closeModalBtn, authForm, authTitle, authSubmitBtn, btnText, btnSpinner;
+let authSwitchLink, authSwitchMsg, authError, authSuccess;
+
+function initializeAuthElements() {
+    loginBtn = document.getElementById('login-btn');
+    logoutBtn = document.getElementById('logout-btn');
+    userInfo = document.getElementById('user-info');
+    userEmailSpan = document.getElementById('user-email');
+    adminPanelBtn = document.getElementById('admin-panel-btn');
+    superAdminPanelBtn = document.getElementById('super-admin-panel-btn');
+
+    authModal = document.getElementById('auth-modal');
+    closeModalBtn = document.getElementById('close-modal-btn');
+    authForm = document.getElementById('auth-form');
+    authTitle = document.getElementById('auth-title');
+    authSubmitBtn = document.getElementById('auth-submit-btn');
+    btnText = authSubmitBtn.querySelector('.btn-text');
+    btnSpinner = authSubmitBtn.querySelector('.btn-spinner');
+    authSwitchLink = document.getElementById('auth-switch-link');
+    authSwitchMsg = document.getElementById('auth-switch-msg');
+    authError = document.getElementById('auth-error');
+    authSuccess = document.getElementById('auth-success');
+}
+
+// Setup Auth Listeners
+function setupAuth() {
+    initializeAuthElements();
+    
+    // Check current session
+    checkSession();
+
+    // Listen for auth state changes
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' || event === 'INITIAL_SESSION') {
+            updateUIForUser(session?.user);
+        } else if (event === 'SIGNED_OUT') {
+            updateUIForUser(null);
+        }
+    });
+
+    // Modal toggles
+    loginBtn.addEventListener('click', () => {
+        resetAuthForm();
+        authModal.classList.remove('hidden');
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+        authModal.classList.add('hidden');
+    });
+
+    authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) {
+            authModal.classList.add('hidden');
+        }
+    });
+
+    // Switch between Login and Register
+    authSwitchLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        isLoginMode = !isLoginMode;
+        resetMessages();
+        if (isLoginMode) {
+            authTitle.textContent = 'تسجيل الدخول';
+            btnText.textContent = 'تسجيل الدخول';
+            authSwitchMsg.textContent = 'ليس لديك حساب؟';
+            authSwitchLink.textContent = 'أنشئ حساباً الآن';
+        } else {
+            authTitle.textContent = 'إنشاء حساب جديد';
+            btnText.textContent = 'إنشاء حساب';
+            authSwitchMsg.textContent = 'لديك حساب بالفعل؟';
+            authSwitchLink.textContent = 'سجل دخولك';
+        }
+    });
+
+    // Form Submit
+    authForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        resetMessages();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        setLoading(true);
+        try {
+            if (isLoginMode) {
+                // Login
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password,
+                });
+                if (error) {
+                    if (error.message.includes('Invalid login credentials')) {
+                        throw new Error('بيانات الدخول غير صحيحة');
+                    }
+                    throw error;
+                }
+                
+                authModal.classList.add('hidden');
+            } else {
+                // Register
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+                if (error) {
+                    if (error.message.includes('User already registered')) {
+                        throw new Error('هذا الحساب مسجل بالفعل.');
+                    }
+                    throw error;
+                }
+
+                if (data?.user?.identities?.length === 0) {
+                    showError('هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.');
+                } else {
+                    showSuccess('تم إنشاء الحساب بنجاح!');
+                    if (data.session) {
+                       setTimeout(() => {
+                           authModal.classList.add('hidden');
+                       }, 1500);
+                    } else {
+                        showSuccess('تم إنشاء الحساب! يرجى مراجعة بريدك الإلكتروني للتأكيد (إن كان مفعلاً).');
+                    }
+                }
+            }
+        } catch (err) {
+            showError(err.message || 'حدث خطأ غير متوقع');
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+        await supabaseClient.auth.signOut();
+    });
+}
+
+async function checkSession() {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (!error) {
+        updateUIForUser(session?.user);
+    }
+}
+
+async function updateUIForUser(user) {
+    const mobileSuperAdminBtn = document.getElementById('mobile-super-admin-btn');
+    const mobileAdminBtn = document.getElementById('mobile-admin-btn');
+
+    if (user) {
+        loginBtn.classList.add('hidden');
+        userInfo.classList.remove('hidden');
+        userEmailSpan.textContent = user.email;
+        
+        const isSuperAdmin = SUPER_ADMIN_EMAILS.some(email => email.toLowerCase() === user.email.trim().toLowerCase());
+        
+        if (superAdminPanelBtn) {
+            if (isSuperAdmin) superAdminPanelBtn.classList.remove('hidden');
+            else superAdminPanelBtn.classList.add('hidden');
+        }
+        if (mobileSuperAdminBtn) {
+            if (isSuperAdmin) mobileSuperAdminBtn.classList.remove('hidden');
+            else mobileSuperAdminBtn.classList.add('hidden');
+        }
+        
+        if (adminPanelBtn || mobileAdminBtn) {
+            if (isSuperAdmin) {
+                if (adminPanelBtn) adminPanelBtn.classList.remove('hidden');
+                if (mobileAdminBtn) mobileAdminBtn.classList.remove('hidden');
+            } else {
+                // Check if they are a regular admin in the DB
+                try {
+                    const normalizedEmail = user.email.trim().toLowerCase();
+                    const { data, error } = await supabaseClient.from('admins').select('email').eq('email', normalizedEmail);
+                    
+                    if (data && data.length > 0) {
+                        if (adminPanelBtn) adminPanelBtn.classList.remove('hidden');
+                        if (mobileAdminBtn) mobileAdminBtn.classList.remove('hidden');
+                    } else {
+                        if (adminPanelBtn) adminPanelBtn.classList.add('hidden');
+                        if (mobileAdminBtn) mobileAdminBtn.classList.add('hidden');
+                    }
+                } catch(e) {
+                     if (adminPanelBtn) adminPanelBtn.classList.add('hidden');
+                     if (mobileAdminBtn) mobileAdminBtn.classList.add('hidden');
+                }
+            }
+        }
+    } else {
+        loginBtn.classList.remove('hidden');
+        userInfo.classList.add('hidden');
+        userEmailSpan.textContent = '';
+        if (adminPanelBtn) adminPanelBtn.classList.add('hidden');
+        if (superAdminPanelBtn) superAdminPanelBtn.classList.add('hidden');
+        if (mobileAdminBtn) mobileAdminBtn.classList.add('hidden');
+        if (mobileSuperAdminBtn) mobileSuperAdminBtn.classList.add('hidden');
+    }
+}
+
+function setLoading(isLoading) {
+    if (isLoading) {
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+        authSubmitBtn.disabled = true;
+        authSubmitBtn.style.opacity = '0.7';
+        authSubmitBtn.style.cursor = 'not-allowed';
+    } else {
+        btnText.classList.remove('hidden');
+        btnSpinner.classList.add('hidden');
+        authSubmitBtn.disabled = false;
+        authSubmitBtn.style.opacity = '1';
+        authSubmitBtn.style.cursor = 'pointer';
+    }
+}
+
+function showError(msg) {
+    authError.textContent = msg;
+    authError.classList.remove('hidden');
+}
+
+function showSuccess(msg) {
+    authSuccess.textContent = msg;
+    authSuccess.classList.remove('hidden');
+}
+
+function resetMessages() {
+    authError.classList.add('hidden');
+    authSuccess.classList.add('hidden');
+    authError.textContent = '';
+    authSuccess.textContent = '';
+}
+
+function resetAuthForm() {
+    authForm.reset();
+    resetMessages();
+    isLoginMode = true;
+    authTitle.textContent = 'تسجيل الدخول';
+    btnText.textContent = 'تسجيل الدخول';
+    authSwitchMsg.textContent = 'ليس لديك حساب؟';
+    authSwitchLink.textContent = 'أنشئ حساباً الآن';
+}
+
+// Mobile Account Modal Logic
+const mobileAccountModal = document.getElementById('mobile-account-modal');
+const closeMobileAccountBtn = document.getElementById('close-mobile-account-btn');
+const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+
+if(closeMobileAccountBtn) {
+    closeMobileAccountBtn.onclick = () => mobileAccountModal.classList.add('hidden');
+}
+if(mobileAccountModal) {
+    mobileAccountModal.onclick = (e) => {
+        if(e.target === mobileAccountModal) mobileAccountModal.classList.add('hidden');
+    }
+}
+if(mobileLogoutBtn) {
+    mobileLogoutBtn.onclick = async () => {
+        await supabaseClient.auth.signOut();
+        mobileAccountModal.classList.add('hidden');
+    };
+}
+
+window.handleMobileAccountClick = async function() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+        resetAuthForm();
+        document.getElementById('auth-modal').classList.remove('hidden');
+    } else {
+        const mobileUserEmail = document.getElementById('mobile-user-email');
+        if (mobileUserEmail) mobileUserEmail.textContent = session.user.email;
+        
+        // Refresh UI state directly to guarantee admin panels appear
+        await updateUIForUser(session.user);
+        
+        if (mobileAccountModal) mobileAccountModal.classList.remove('hidden');
+    }
+};
+// --- AUTH LOGIC END ---
+
+
+async function fetchProducts() {
+    const loadingSpinner = document.getElementById('loading');
+    const productsGrid = document.getElementById('products-grid');
+    const errorMessage = document.getElementById('error-message');
+    const emptyState = document.getElementById('empty-state');
+
+    if (errorMessage) {
+        errorMessage.classList.add('hidden');
+        errorMessage.textContent = '';
+    }
+    if (productsGrid) {
+        productsGrid.innerHTML = '';
+        productsGrid.classList.add('hidden');
+    }
+    if (emptyState) {
+        emptyState.classList.add('hidden');
+    }
+    
+    // Show skeleton UI while loading
+    if (loadingSpinner) {
+        loadingSpinner.classList.remove('hidden');
+        const skeletonHtml = Array(6).fill(0).map(() => `
+            <div class="product-card" style="border: none; pointer-events: none; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                <div class="skeleton" style="height: 220px; width: 100%; border-radius: 16px 16px 0 0;"></div>
+                <div class="product-content" style="gap: 0.8rem;">
+                    <div class="skeleton" style="height: 24px; width: 70%;"></div>
+                    <div class="skeleton" style="height: 16px; width: 90%;"></div>
+                    <div class="skeleton" style="height: 16px; width: 50%;"></div>
+                    <div style="margin-top: 1rem;">
+                        <div class="skeleton" style="height: 36px; width: 40%; border-radius: 8px;"></div>
+                    </div>
+                    <div class="skeleton" style="height: 10px; width: 100%; margin-top: 1rem; border-radius: 5px;"></div>
+                    <div class="skeleton" style="height: 48px; width: 100%; border-radius: 12px; margin-top: auto;"></div>
+                </div>
+            </div>
+        `).join('');
+        const tempGrid = document.createElement('div');
+        tempGrid.className = 'products-grid';
+        tempGrid.innerHTML = skeletonHtml;
+        loadingSpinner.appendChild(tempGrid);
+    }
+
+    try {
+        // ✅ Fetch ALL products from Supabase database
+        const { data: dbProducts, error } = await supabaseClient
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        // Hide loading spinner
+        if (loadingSpinner) {
+            loadingSpinner.innerHTML = '';
+            loadingSpinner.classList.add('hidden');
+        }
+
+        if (error) {
+            console.error('Supabase error:', error);
+            if (errorMessage) {
+                errorMessage.textContent = 'حدث خطأ أثناء تحميل المنتجات: ' + error.message;
+                errorMessage.classList.remove('hidden');
+            }
+            return;
+        }
+
+        // If no products found, show empty state
+        if (!dbProducts || dbProducts.length === 0) {
+            if (emptyState) emptyState.classList.remove('hidden');
+            productsCache = [];
+            return;
+        }
+
+        // Cache all products for detail/showcase views
+        productsCache = dbProducts;
+
+        // Render product cards
+        if (productsGrid) {
+            productsGrid.classList.remove('hidden');
+
+            productsGrid.innerHTML = dbProducts.map((product) => {
+                const imgSrc = product.image_url || 'https://via.placeholder.com/300?text=LodeLode';
+                const price = product.price || product.wholesale_price || 0;
+                const category = product.category || 'عام';
+                const description = product.description || product.specifications || '';
+
+                return `
+                    <div class="product-card" onclick="toggleCardExpansion('${product.id}')" data-category="${category}">
+                        <div class="product-img-container">
+                            <img src="${imgSrc}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/300?text=LodeLode'">
+                            <div class="card-actions">
+                                <button class="action-btn" title="أضف إلى السلة">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </button>
+                                <button class="action-btn" title="أعجبني">
+                                    <i class="fas fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-category">${category}</span>
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-desc">${description}</p>
+                            <div class="product-footer">
+                                <span class="product-price">
+                                    ${Number(price).toLocaleString()} <span class="currency">دج</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+    } catch (err) {
+        console.error('Error fetching products:', err);
+        if (loadingSpinner) {
+            loadingSpinner.innerHTML = '';
+            loadingSpinner.classList.add('hidden');
+        }
+        if (errorMessage) {
+            errorMessage.textContent = 'خطأ غير متوقع: ' + err.message;
+            errorMessage.classList.remove('hidden');
+        }
+    }
+}
+
+// --- IMMERSIVE SPLIT-SCREEN SHOWCASE START ---
+window.toggleCardExpansion = function(id) {
+    console.log('toggleCardExpansion triggered for ID:', id);
+    if (!productsCache || productsCache.length === 0) {
+        console.error('Products cache is empty');
+        return;
+    }
+    const product = productsCache.find(p => String(p.id) === String(id));
+    if (product) {
+        openShowcase(product);
+    } else {
+        console.error('Product not found in cache for ID:', id);
+    }
+};
+
+window.openShowcase = function(product) {
+    const showcase = document.getElementById('product-showcase');
+    const target = document.getElementById('showcase-content-target');
+    
+    if (!showcase || !target) {
+        console.error('Showcase elements not found in DOM');
+        return;
+    }
+
+    const productImg = product.image_url || 'luxury_iphone_dark_1776985979654.png';
+
+    const basePrice = product.price || 65000;
+    const targetBuyers = product.target_buyers || 100;
+    const marketPrice = product.market_price || Math.round(basePrice * 1.3);
+    const wholesalePrice = product.wholesale_price || basePrice;
+    const currentBuyers = product.buyers_count || Math.floor(Math.random() * (targetBuyers - 10)) + 5;
+    const priceDropPerBuyer = (marketPrice - wholesalePrice) / targetBuyers;
+    const currentPrice = marketPrice - (priceDropPerBuyer * currentBuyers);
+    const progressPercent = Math.min((currentBuyers / targetBuyers) * 100, 100);
+
+    target.innerHTML = `
+        <div class="showcase-visual">
+            <div class="cinematic-glow" style="width: 100%; height: 100%;"></div>
+            <img src="${productImg}" class="showcase-img" alt="${product.name}" onerror="this.src='luxury_iphone_dark_1776985979654.png'">
+        </div>
+        <div class="showcase-details">
+            <h2 class="showcase-title" style="margin-bottom: 0.5rem;">${product.name}</h2>
+            <p style="color: #cbd5e1; line-height: 1.4; margin-bottom: 1rem; font-size: 0.9rem;">${product.specifications || 'عرض حصري ومميز من LodeaLode.'}</p>
+            
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+                <span style="color: #f59e0b; font-size: 1.1rem;">★★★★★</span>
+                <span style="color: #94a3b8; font-size: 0.8rem;">(4.8 / 26 مراجعة)</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1.5rem; background: rgba(255,255,255,0.03); padding: 1.2rem; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="text-align: right;">
+                    <div style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 2px;">سعر السوق</div>
+                    <div style="color: #b0b0b0; text-decoration: line-through; font-size: 1.1rem;">${Math.round(marketPrice).toLocaleString()} د.ج</div>
+                </div>
+                <div style="text-align: left;">
+                    <div style="color: #fff; font-size: 0.9rem; font-weight: 700; margin-bottom: 2px;">السعر الحالي</div>
+                    <div style="color: #F59E0B; font-size: 2.2rem; font-weight: 900;">${Math.round(currentPrice).toLocaleString()} <small style="font-size: 0.9rem;">د.ج</small></div>
+                </div>
+            </div>
+
+            <div class="progress-container" style="margin-bottom: 1.2rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #fff; margin-bottom: 8px; font-weight: 700;">
+                    <span>انضم ${currentBuyers} طالب</span>
+                    <span>الهدف: ${targetBuyers} صفقة</span>
+                </div>
+                <div class="progress-track" style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px;">
+                    <div class="progress-fill" style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #F59E0B, #FB7185); border-radius: 5px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);"></div>
+                </div>
+                <div style="text-align: center; color: #10B981; font-weight: 800; margin-top: 8px; font-size: 1rem;">
+                    السعر الأدنى المستهدف: ${Math.round(wholesalePrice).toLocaleString()} د.ج
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: auto;">
+                <button class="cta-btn btn-solid" style="padding: 1.1rem; flex: 2; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 10px;" onclick="openCheckout('${product.id}', '${product.name.replace(/'/g, "\\'")}')">
+                    <span>انضم للصفقة الآن</span> <span style="font-size: 1.3rem;">➡️</span>
+                </button>
+                <button class="cta-btn btn-ghost" style="padding: 1rem; flex: 1;" onclick="openProductDetailById('${product.id}')">
+                    التفاصيل 🔍
+                </button>
+            </div>
+        </div>
+    `;
+
+    showcase.classList.add('active');
+    
+    // Smooth scroll to showcase
+    setTimeout(() => {
+        showcase.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+};
+
+window.closeShowcase = function() {
+    const showcase = document.getElementById('product-showcase');
+    showcase.classList.remove('active');
+};
+
+window.openProductDetailById = function(id) {
+    const product = productsCache.find(p => p.id == id);
+    if (product) openProductDetail(product);
+};
+
+window.openProductDetail = function(product) {
+    const overlay = document.getElementById('product-detail-overlay');
+    const target = document.getElementById('detail-content-target');
+    
+    const stars = 4 + Math.floor(Math.random() * 2);
+    let starsHtml = '';
+    for(let i=0; i<5; i++) starsHtml += `<span style="color: ${i < stars ? '#f59e0b' : 'rgba(255,255,255,0.2)'}">★</span>`;
+
+    const productImg = product.image_url || 'luxury_iphone_dark_1776985979654.png';
+
+    target.innerHTML = `
+        <div class="detail-container">
+            <div class="detail-header"><div class="cinematic-glow"></div><img src="${productImg}" class="detail-img" alt="${product.name}"></div>
+            <div class="detail-info">
+                <div class="star-rating">${starsHtml}</div>
+                <h1 class="detail-title">${product.name}</h1>
+                <p class="detail-desc">${product.specifications || 'وصف منتج حصري.'}</p>
+                <div style="display: flex; align-items: center; gap: 2rem; margin-top: 3rem;">
+                    <button class="cta-btn btn-solid" style="padding: 1.5rem 3rem;" onclick="openCheckout('${product.id}', '${product.name.replace(/'/g, "\\'")}')">انضم للصفقة</button>
+                    <div style="font-size: 2.5rem; font-weight: 900; color: #10B981;">${Math.round(product.price || 65000).toLocaleString()} DZD</div>
+                </div>
+                <div class="reviews-section">
+                    <h2 style="font-size: 2rem; margin-bottom: 2rem;">آراء المشترين</h2>
+                    <div class="review-item">
+                        <div class="review-user"><div class="user-avatar"></div><div><strong>سفيان م.</strong><br><small>منذ يومين</small></div></div>
+                        <p>الجودة رائعة جداً والتوصيل سريع.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeProductDetail = function() {
+    const overlay = document.getElementById('product-detail-overlay');
+    overlay.classList.remove('active');
+    document.body.style.overflow = 'auto';
+};
+// --- IMMERSIVE SPLIT-SCREEN SHOWCASE END ---
+
+// --- CHECKOUT LOGIC START ---
+const checkoutModal = document.getElementById('checkout-modal');
+if (checkoutModal) {
+    const closeCheckoutBtn = document.getElementById('close-checkout-btn');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutSubmitBtn = document.getElementById('checkout-submit-btn');
+    const checkoutError = document.getElementById('checkout-error');
+    const checkoutSuccess = document.getElementById('checkout-success');
+
+    window.openCheckout = async function(productId, productName) {
+        // Check if user is logged in
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        
+        if (!session) {
+            // Not logged in, open Auth Modal
+            document.getElementById('auth-modal').classList.remove('hidden');
+            showError('يرجى تسجيل الدخول أو إنشاء حساب أولاً لإتمام طلبك.');
+            return;
+        }
+
+        // Set hidden fields
+        document.getElementById('checkout-product-id').value = productId;
+        document.getElementById('checkout-product-name').value = productName;
+        
+        // reset form
+        checkoutForm.reset();
+        checkoutError.classList.add('hidden');
+        checkoutSuccess.classList.add('hidden');
+
+        checkoutModal.classList.remove('hidden');
+    }
+
+    closeCheckoutBtn.addEventListener('click', () => {
+        checkoutModal.classList.add('hidden');
+    });
+
+    checkoutForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        checkoutError.classList.add('hidden');
+        checkoutSuccess.classList.add('hidden');
+        
+        const btnText = checkoutSubmitBtn.querySelector('.btn-text');
+        const btnSpinner = checkoutSubmitBtn.querySelector('.btn-spinner');
+        
+        btnText.classList.add('hidden');
+        btnSpinner.classList.remove('hidden');
+        checkoutSubmitBtn.disabled = true;
+
+        try {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if(!session) throw new Error('انتهت الجلسة، يرجى تسجيل الدخول مجدداً.');
+
+            const orderData = {
+                product_id: document.getElementById('checkout-product-id').value,
+                user_email: session.user.email,
+                first_name: document.getElementById('first-name').value,
+                last_name: document.getElementById('last-name').value,
+                phone: document.getElementById('phone-number').value,
+                wilaya: document.getElementById('wilaya').value,
+                product_name: document.getElementById('checkout-product-name').value,
+                status: 'قيد المراجعة'
+            };
+
+            const { error } = await supabaseClient
+                .from('orders')
+                .insert([orderData]);
+
+            if (error) {
+                throw error;
+            }
+
+            checkoutSuccess.textContent = 'تم تسجيل طلبك مبدئياً بنجاح! سيقوم فريقنا بالاتصال بك قريباً عبر الهاتف لتأكيد الطلب.';
+            checkoutSuccess.classList.remove('hidden');
+            
+            setTimeout(() => {
+                checkoutModal.classList.add('hidden');
+            }, 3000);
+
+        } catch(err) {
+            checkoutError.textContent = 'حدث خطأ: ' + (err.message.includes('relation "public.orders" does not exist') ? 'جدول الطلبات (orders) غير موجود بقاعدة البيانات، يرجى إنشاؤه.' : err.message);
+            checkoutError.classList.remove('hidden');
+        } finally {
+            btnText.classList.remove('hidden');
+            btnSpinner.classList.add('hidden');
+            checkoutSubmitBtn.disabled = false;
+        }
+    });
+
+    checkoutModal.addEventListener('click', (e) => {
+        if (e.target === checkoutModal) {
+            checkoutModal.classList.add('hidden');
+        }
+    });
+}
+// --- CHECKOUT LOGIC END ---
+
+// --- MY ORDERS LOGIC START ---
+const ordersModal = document.getElementById('orders-modal');
+const ordersList = document.getElementById('orders-list');
+const ordersLoading = document.getElementById('orders-loading');
+const ordersEmpty = document.getElementById('orders-empty');
+const closeOrdersBtn = document.getElementById('close-orders-btn');
+const myOrdersBtn = document.getElementById('my-orders-btn');
+const mobileOrdersBtn = document.getElementById('mobile-orders-btn');
+
+async function openOrdersModal() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+        document.getElementById('auth-modal').classList.remove('hidden');
+        return;
+    }
+
+    ordersModal.classList.remove('hidden');
+    ordersList.innerHTML = '';
+    ordersLoading.classList.remove('hidden');
+    ordersEmpty.classList.add('hidden');
+
+    try {
+        const { data: orders, error } = await supabaseClient
+            .from('orders')
+            .select('*')
+            .eq('user_email', session.user.email)
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        ordersLoading.classList.add('hidden');
+
+        if (orders && orders.length > 0) {
+            ordersList.innerHTML = orders.map(order => {
+                const date = new Date(order.created_at).toLocaleDateString('ar-DZ');
+                let statusClass = 'status-pending';
+                if (order.status === 'مؤكد') statusClass = 'status-confirmed';
+                if (order.status === 'مرفوض') statusClass = 'status-rejected';
+                if (order.status === 'تم الشحن') statusClass = 'status-shipped';
+
+                return `
+                    <div class="order-card-premium" onclick="this.classList.toggle('expanded')">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="color: #fff; font-size: 1.1rem; margin: 0;">${order.product_name || 'منتج مجهول'}</h3>
+                            <span class="order-status-badge ${statusClass}" style="position: static; margin: 0;">${order.status || 'قيد المراجعة'}</span>
+                        </div>
+                        
+                        <div class="order-extra-details" style="margin-top: 0;">
+                            <div style="padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 1rem;">
+                                <div style="margin-bottom: 0.8rem;">
+                                    <span style="color: #94A3B8; font-size: 0.8rem;">طلب بتاريخ:</span>
+                                    <span style="color: #fff; font-size: 0.9rem; margin-right: 8px;">${date}</span>
+                                </div>
+                                <div style="margin-bottom: 0.8rem;">
+                                    <span style="color: #94A3B8; font-size: 0.8rem;">رقم التتبع:</span>
+                                    <span style="color: var(--accent-gold); font-size: 0.9rem; margin-right: 8px; font-weight: 700;">${order.tracking_number || 'بانتظار الشحن...'}</span>
+                                </div>
+                                <div>
+                                    <span style="color: #94A3B8; font-size: 0.8rem;">شركة الشحن:</span>
+                                    <span style="color: #fff; font-size: 0.9rem; margin-right: 8px;">${order.shipping_company || 'سيتواصل معك فريقنا'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+
+            }).join('');
+
+        } else {
+            ordersEmpty.classList.remove('hidden');
+        }
+    } catch (err) {
+        console.error('Error fetching orders:', err);
+        ordersList.innerHTML = `<p style="color: #F87171; text-align: center;">خطأ في تحميل الطلبات: ${err.message}</p>`;
+        ordersLoading.classList.add('hidden');
+    }
+}
+
+if (myOrdersBtn) myOrdersBtn.onclick = openOrdersModal;
+if (mobileOrdersBtn) mobileOrdersBtn.onclick = openOrdersModal;
+if (closeOrdersBtn) closeOrdersBtn.onclick = () => ordersModal.classList.add('hidden');
+if (ordersModal) {
+    ordersModal.onclick = (e) => { if (e.target === ordersModal) ordersModal.classList.add('hidden'); };
+}
+// --- MY ORDERS LOGIC END ---
+// --- CHECKOUT LOGIC END ---
+
+// --- SOCIAL PROOF & FILTERING ---
+function setupSocialProof() {
+    const spModal = document.getElementById('social-proof');
+    const spUser = document.getElementById('sp-user');
+    const spProduct = document.getElementById('sp-product');
+    
+    const names = ['أحمد', 'مريم', 'ياسين', 'سارة', 'مصطفى', 'إيمان', 'حمزة'];
+    const cities = ['وهران', 'الجزائر', 'عنابة', 'قسنطينة', 'سطيف', 'بجاية'];
+    
+    setInterval(() => {
+        const allProducts = document.querySelectorAll('.product-title');
+        if(allProducts.length === 0) return;
+        
+        const randomName = names[Math.floor(Math.random() * names.length)];
+        const randomCity = cities[Math.floor(Math.random() * cities.length)];
+        const randomProduct = allProducts[Math.floor(Math.random() * allProducts.length)].textContent;
+        
+        spUser.textContent = `${randomName} من ${randomCity}`;
+        spProduct.textContent = randomProduct;
+        
+        spModal.classList.remove('hidden');
+        setTimeout(() => spModal.classList.add('hidden'), 5000);
+    }, 15000 + Math.random() * 10000);
+}
+
+function setupFiltering() {
+    const tabs = document.querySelectorAll('.cat-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            const cat = tab.dataset.category;
+            const cards = document.querySelectorAll('.product-card');
+            
+            cards.forEach(card => {
+                if(cat === 'all' || card.dataset.category === cat) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+}
+
+// --- MOTION UI & SCROLL ANIMATIONS ---
+function initMotionUI() {
+    // Reveal on Scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Magnetic Buttons
+    document.querySelectorAll('.cta-btn, .nav-btn').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px) scale(1.05)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = '';
+        });
+    });
+
+    // Simple Tilt Effect for Cards
+    document.addEventListener('mousemove', (e) => {
+        document.querySelectorAll('.product-card-container').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                const xc = rect.width / 2;
+                const yc = rect.height / 2;
+                const dx = x - xc;
+                const dy = y - yc;
+                card.style.transform = `perspective(1000px) rotateY(${dx / 25}deg) rotateX(${-dy / 25}deg) translateY(-12px) scale(1.02)`;
+            } else {
+                card.style.transform = '';
+            }
+        });
+    });
+}
+
+// Load products and setup auth when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    fetchProducts().then(() => {
+        setupFiltering();
+        setupSocialProof();
+        initMotionUI(); // Initialize Motion UI after products are loaded
+    });
+    setupAuth();
+    initThreeBackground();
+});
+
+// --- THREE.JS FUTURISTIC MARKETPLACE BACKGROUND ---
+function initThreeBackground() {
+    const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+    
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX - window.innerWidth / 2) / 100;
+        mouseY = (e.clientY - window.innerHeight / 2) / 100;
+    });
+
+    const updateSize = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        renderer.setSize(width, height);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+    };
+    updateSize();
+    window.addEventListener('resize', updateSize);
+
+    // Dynamic Floating Icons (Shopping vibe)
+    const floatingIcons = [];
+    const iconGeometries = [
+        new THREE.TorusGeometry(1, 0.3, 16, 100), // Cart wheel / Loop
+        new THREE.BoxGeometry(1.5, 1.5, 1.5),    // Package
+        new THREE.OctahedronGeometry(1.2),       // Gem / Quality
+        new THREE.CylinderGeometry(0.5, 0.5, 2)  // Product tube
+    ];
+
+    const iconMaterials = [
+        new THREE.MeshPhysicalMaterial({ color: 0xfb923c, metalness: 0.9, roughness: 0.1, emissive: 0xfb923c, emissiveIntensity: 0.5 }),
+        new THREE.MeshPhysicalMaterial({ color: 0x38bdf8, metalness: 0.8, roughness: 0.2, emissive: 0x38bdf8, emissiveIntensity: 0.5 }),
+        new THREE.MeshPhysicalMaterial({ color: 0xf472b6, metalness: 0.9, roughness: 0.1, emissive: 0xf472b6, emissiveIntensity: 0.5 })
+    ];
+
+    for (let i = 0; i < 25; i++) {
+        const geo = iconGeometries[Math.floor(Math.random() * iconGeometries.length)];
+        const mat = iconMaterials[Math.floor(Math.random() * iconMaterials.length)];
+        const icon = new THREE.Mesh(geo, mat);
+        
+        icon.position.set(
+            (Math.random() - 0.5) * 60,
+            (Math.random() - 0.5) * 40,
+            (Math.random() - 0.5) * 40
+        );
+        
+        icon.userData = {
+            rotX: (Math.random() - 0.5) * 0.02,
+            rotY: (Math.random() - 0.5) * 0.02,
+            floatSpeed: 0.001 + Math.random() * 0.005,
+            offset: Math.random() * Math.PI * 2
+        };
+        
+        scene.add(icon);
+        floatingIcons.push(icon);
+    }
+
+    // Glowing Neon Paths (The lines from the image)
+    const pathCount = 15;
+    const paths = [];
+    for (let i = 0; i < pathCount; i++) {
+        const curve = new THREE.CubicBezierCurve3(
+            new THREE.Vector3(-50, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 20),
+            new THREE.Vector3(-10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 20),
+            new THREE.Vector3(10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 20),
+            new THREE.Vector3(50, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 20)
+        );
+        const points = curve.getPoints(50);
+        const geometry = new THREE.BufferGeometry().setFromPoints(points);
+        const material = new THREE.LineBasicMaterial({ 
+            color: i % 2 === 0 ? 0x38bdf8 : 0xf472b6, 
+            transparent: true, 
+            opacity: 0.3 
+        });
+        const line = new THREE.Line(geometry, material);
+        scene.add(line);
+        paths.push(line);
+    }
+
+    // Sunset Ambiance Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    scene.add(ambientLight);
+
+    const orangeLight = new THREE.PointLight(0xfb923c, 3, 100);
+    orangeLight.position.set(30, 20, 10);
+    scene.add(orangeLight);
+
+    const pinkLight = new THREE.PointLight(0xf472b6, 2, 80);
+    pinkLight.position.set(-30, -10, 5);
+    scene.add(pinkLight);
+
+    const blueLight = new THREE.PointLight(0x38bdf8, 2, 80);
+    blueLight.position.set(0, 0, 20);
+    scene.add(blueLight);
+
+    camera.position.z = 35;
+
+    let scrollY = 0;
+    window.addEventListener('scroll', () => {
+        scrollY = window.scrollY;
+    });
+
+    const animate = () => {
+        requestAnimationFrame(animate);
+        const time = Date.now() * 0.001;
+        
+        const scrollFactor = scrollY * 0.02;
+        camera.position.z = 35 - scrollFactor;
+
+        camera.position.x += (mouseX - camera.position.x) * 0.05;
+        camera.position.y += (-mouseY - camera.position.y) * 0.05;
+        camera.lookAt(0, 0, -scrollFactor);
+
+        // Animate Icons
+        floatingIcons.forEach(icon => {
+            icon.rotation.x += icon.userData.rotX;
+            icon.rotation.y += icon.userData.rotY;
+            icon.position.y += Math.sin(time + icon.userData.offset) * icon.userData.floatSpeed;
+            icon.position.x += Math.cos(time + icon.userData.offset) * 0.01;
+        });
+
+        // Animate Paths (Pulse effect)
+        paths.forEach((path, i) => {
+            path.material.opacity = 0.1 + Math.sin(time * 2 + i) * 0.1;
+            path.position.z = Math.sin(time * 0.5 + i) * 5;
+        });
+
+        renderer.render(scene, camera);
+    };
+
+    animate();
+}
+
+window.scrollToProducts = function() {
+    const section = document.querySelector('.products-section');
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+    }
+};
